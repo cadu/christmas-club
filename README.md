@@ -1,1 +1,1 @@
-# christmas-club
+# Christmas Club
