@@ -22,3 +22,7 @@ typechain-types
 cache
 artifacts
 
+#eXtra files used as donors for real functions
+scripts/*.tsx
+tests/*.tsx
+contracts/*.solx
