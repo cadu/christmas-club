@@ -29,14 +29,6 @@ const Profile: NextPage = () => {
             </a>
           </Link>
         </div>
-        <div className="">
-          <div className="flex flex-col">
-            <div className="font-bold py-6">Puzzle Progress</div>
-            <div className="flex flex-col w-full gap-6">
-              <div className="flex gap-6"></div>
-            </div>
-          </div>
-        </div>
       </div>
     );
   };
