@@ -1,7 +1,13 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useAccount } from "wagmi";
+import { useIsMounted } from "../hooks/useIsMounted";
 
 const Home: NextPage = () => {
+  const { address, isConnecting, isDisconnected } = useAccount();
+  const mounted = useIsMounted();
+  // if (isDisconnected) return <div>Disconnected</div>;
+
   return (
     <>
       <Head>
@@ -9,7 +15,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="container mx-auto flex flex-col max-w-4xl p-4">
-        <h1>Hello!</h1>
+        {mounted && isConnecting && <div>Connecting...</div>}
       </main>
     </>
   );
