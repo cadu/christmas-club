@@ -1,6 +1,28 @@
 {
-  "name": "christmas-club",
-  "packageManager": "yarn@3.3.0",
+  "name": "my-t3-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.6.6",
+    "@heroicons/react": "^2.0.10",
+    "@rainbow-me/rainbowkit": "^0.7.1",
+    "dotenv": "^16.0.3",
+    "ethers": "^5.4.7",
+    "next": "12.2.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-icons": "^4.4.0",
+    "react-number-format": "^5.0.0-beta.4",
+    "react-responsive-carousel": "^3.2.23",
+    "wagmi": "^0.6.8",
+    "zod": "^3.18.0"
+  },
   "devDependencies": {
     "@ethersproject/abi": "^5.4.7",
     "@ethersproject/providers": "^5.4.7",
@@ -14,21 +36,25 @@
     "@types/chai": "^4.2.0",
     "@types/mocha": "^9.1.0",
     "@types/node": ">=12.0.0",
+    "@types/react": "18.0.14",
+    "@types/react-dom": "18.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
+    "autoprefixer": "^10.4.8",
     "chai": "^4.2.0",
-    "ethers": "^5.4.7",
-    "hardhat": "^2.11.1",
+    "eslint": "8.22.0",
+    "eslint-config-next": "12.2.5",
+    "hardhat": "^2.12.4",
     "hardhat-gas-reporter": "^1.0.8",
-    "mocha": "^10.1.0",
+    "mocha": "^10.2.0",
+    "postcss": "^8.4.16",
     "solidity-coverage": "^0.8.0",
+    "tailwindcss": "^3.1.8",
     "ts-node": ">=8.0.0",
     "typechain": "^8.1.0",
     "typescript": ">=4.5.0"
   },
-  "dependencies": {
-    "@ethersproject/bytes": "^5.7.0",
-    "dotenv": "^16.0.3"
-  },
-  "scripts": {
-    "test": "mocha --parallel -r hardhat/register ./tests/**/*.ts"
+  "ct3aMetadata": {
+    "initVersion": "5.9.0"
   }
 }

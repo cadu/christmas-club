@@ -31,8 +31,4 @@ contract ChristmasClub {
 
         owner.transfer(address(this).balance);
     }
-
-    function anything() public pure returns (uint256 blah) {
-        return 256;
-    }
 }
