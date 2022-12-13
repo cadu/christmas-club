@@ -47,7 +47,5 @@ typechain-types
 cache
 artifacts
 
-#eXtra files used as donors for real functions
-scripts/*.tsx
-tests/*.tsx
-contracts/*.solx
+#No need to push install-state.gz to users who don't need it.
+.yarn/install-state.gz
