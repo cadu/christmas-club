@@ -16,26 +16,6 @@ const Footer = (props) => {
       <Link href="/faq">
         <a>FAQ</a>
       </Link>
-      <div className="social ml-auto gap-3 flex">
-        <Link href="https://twitter.com">
-          <a className="flex items-center">
-            <AiOutlineTwitter />{" "}
-            <span className="hidden md:block">Twitter</span>
-          </a>
-        </Link>
-        <Link href="https://instagram.com">
-          <a className="flex items-center">
-            <AiOutlineInstagram />{" "}
-            <span className="hidden md:block">Instagram</span>
-          </a>
-        </Link>
-        <Link href="https://medium.com">
-          <a className="flex items-center">
-            <AiOutlineMedium />
-            <span className="hidden md:block">Medium</span>
-          </a>
-        </Link>
-      </div>
     </footer>
   );
 };

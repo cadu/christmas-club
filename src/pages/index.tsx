@@ -4,9 +4,18 @@ import { useAccount } from "wagmi";
 import { useIsMounted } from "../hooks/useIsMounted";
 
 const Home: NextPage = () => {
-  const { address, isConnecting, isDisconnected } = useAccount();
+  const { isConnecting, isDisconnected } = useAccount();
   const mounted = useIsMounted();
-  // if (isDisconnected) return <div>Disconnected</div>;
+
+  if (isDisconnected)
+    return (
+      <>
+        <Head>
+          <title>Christmas Club</title>
+        </Head>
+        <div>Disconnected</div>
+      </>
+    );
 
   return (
     <>

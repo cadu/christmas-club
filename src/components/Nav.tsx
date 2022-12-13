@@ -25,15 +25,16 @@ const Nav = () => {
 
   return (
     <>
-      <nav className="md:flex hidden justify-between w-full max-w-4xl mx-auto p-6 lg:px-0 shrink-0">
+      <nav className="md:flex hidden justify-between w-full max-w-4xl items-center mx-auto p-6 lg:px-0 shrink-0">
         <Link href="/">
-          <a>My logo</a>
+          <a>Christmas Club</a>
         </Link>
         {menuItems.map((menu) => (
           <Link key={menu.link} href={menu.link}>
             {menu.text}
           </Link>
         ))}
+
         <ConnectKitButton />
       </nav>
     </>
