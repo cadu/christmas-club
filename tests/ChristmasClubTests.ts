@@ -57,6 +57,53 @@ describe("Christmas Club", function () {
       expect(await christmasClubContract.owner()).to.equal(accounts[0].address);
     });
   });
+  
+  describe("Contract totals", function() {
+
+    let accounts: SignerWithAddress[];
+    let christmasClubContract: ChristmasClub;
+    let unlockStartTimeSeconds: Number;
+
+    beforeEach(async () => {
+      accounts = await ethers.getSigners();
+      const unlockStartTime : Date = new Date("2023-12-01"); //YYYY-MM-DD
+      //getSeconds() returns 0. //getTime() is milliseconds since 01/01/1970,
+      //  divide by 1000 to get seconds
+      unlockStartTimeSeconds = (unlockStartTime.getTime() / 1000);
+      const unlockStartTimeSecondsBN = ethers.BigNumber.from(unlockStartTimeSeconds);
+      const christmasClubFactory = new ChristmasClub__factory(accounts[0]);
+      christmasClubContract = await christmasClubFactory.deploy(unlockStartTimeSecondsBN);
+      await christmasClubContract.deployed();
+    });
+
+    it("Should show the correct number of total savers", async function() {
+      const EXPECTED_INITIAL_SAVER_COUNT = 0;
+      const numSaversBN = await christmasClubContract.numberOfSavers();
+      const numSavers = ethers.BigNumber.from(numSaversBN);
+      expect(numSavers, `Contract number of savers was ${numSavers} 
+        but expected ${EXPECTED_INITIAL_SAVER_COUNT}`
+      ).to.equal(EXPECTED_INITIAL_SAVER_COUNT);
+    });
+
+    it("Should show the total goal amount set", async function() {
+      const EXPECTED_INITIAL_GOAL_AMT = 0;
+      const totalGoalAmountBN = await christmasClubContract.totalGoalAmount();
+      const totalGoalAmount = ethers.BigNumber.from(totalGoalAmountBN);
+      expect(totalGoalAmount, `Contract goal total was ${totalGoalAmount} 
+        but expected ${EXPECTED_INITIAL_GOAL_AMT}`
+      ).to.equal(EXPECTED_INITIAL_GOAL_AMT);
+    });
+
+    it("Should show the total amount saved", async function() {
+      const EXPECTED_INITIAL_SAVINGS_AMT = 0;
+      const totalAmountSavedBN = await christmasClubContract.totalAmountSaved();
+      const totalAmountSaved = ethers.BigNumber.from(totalAmountSavedBN);
+      expect(totalAmountSaved, `Contract number of savers was ${totalAmountSaved} 
+        but expected ${EXPECTED_INITIAL_SAVINGS_AMT}`
+      ).to.equal(EXPECTED_INITIAL_SAVINGS_AMT);
+    });
+  });
+
   /*
   describe("Withdrawals", function () {
     describe("Validations", function () {

@@ -12,6 +12,13 @@ contract ChristmasClub {
     //If now is > unlockEndTime, then we're in the next year so bump forward
     //both unlockStartTime and unlockEndTime by one year.
     uint public unlockEndTime;
+
+    uint256 public numberOfSavers = 0;
+
+    uint256 public totalGoalAmount = 0;
+
+    uint256 public totalAmountSaved = 0;
+
     
     address payable public owner;
 
