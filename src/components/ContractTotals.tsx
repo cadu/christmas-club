@@ -1,28 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "hardhat";
 import { BigNumber } from "ethers";
-import ChristmasClub from "../artifacts/contracts/ChristmasClub.sol/ChristmasClub.json";
-import { useAccount, useContractRead } from "wagmi";
+import ContractAbi from "../artifacts/contracts/abis/ChristmasClub";
+import {
+  useAccount,
+  useContractRead,
+  useContractWrite,
+  usePrepareContractWrite,
+} from "wagmi";
 import { useIsMounted } from "../hooks/useIsMounted";
 
-const ContractTotals = (props) => {
-  const [numberOfSavers, setNumberOfSavers] = useState(0);
+const ContractTotals = () => {
   // Call smart contract, fetch current value
 
   const { address, status, isConnected } = useAccount();
 
   const {
-    data: getXdata,
+    data: numberOfSavers,
     isError,
     isLoading,
   } = useContractRead({
     address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
-    abi: ChristmasClub.abi,
-    functionName: "getX",
-    // onSuccess(data) {
-    //   data = BigNumber.from(data).toString();
-    // },
+    abi: ContractAbi.abi,
+    functionName: "numberOfSavers",
+    watch: true,
   });
+
+  const { config } = usePrepareContractWrite({
+    address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
+    abi: ContractAbi.abi,
+    functionName: "increaseSavers",
+    args: [BigNumber.from(1)],
+  });
+
+  const { data: increaseSaversResult, write: writeIncrease } =
+    useContractWrite(config);
 
   const mounted = useIsMounted();
   /*
@@ -57,7 +69,14 @@ const ContractTotals = (props) => {
         Savers: user wallet ${address} status ${status} Total Amount Saved {}{" "}
         Total Goal
       </p>
-      <div>{Number(getXdata)}</div>
+      <div>{numberOfSavers?.toNumber()}</div>
+      <button
+        className=" bg-green-600 text-white p-1 rounded-md"
+        disabled={!writeIncrease}
+        onClick={() => writeIncrease?.()}
+      >
+        Increase
+      </button>
     </div>
   );
 };

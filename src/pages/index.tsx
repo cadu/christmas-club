@@ -6,7 +6,7 @@ import { useIsMounted } from "../hooks/useIsMounted";
 
 const Home: NextPage = () => {
   const { isConnecting, isDisconnected } = useAccount();
-  
+
   //call this last, only after everything else is called
   const mounted = useIsMounted();
 
@@ -29,7 +29,7 @@ const Home: NextPage = () => {
       <main className="container mx-auto flex flex-col max-w-4xl p-4">
         {mounted && isConnecting && <div>Connecting...</div>}
 
-        <ContractTotals/> 
+        <ContractTotals />
       </main>
     </>
   );
