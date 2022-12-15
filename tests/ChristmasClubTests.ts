@@ -10,7 +10,7 @@ describe("Christmas Club", function () {
   describe("Deployment - start unlock time in past", function () {
     let accounts: SignerWithAddress[];
     let christmasClubContract: ChristmasClub;
-    let unlockStartTimeSeconds: Number;
+    let unlockStartTimeSeconds: number;
 
     it("Should fail if the unlockTime is not in the future", async function () {
       // We don't use the beforeEach here because we want a different deployment
@@ -79,7 +79,8 @@ describe("Christmas Club", function () {
     it("Should show the correct number of total savers", async function() {
       const EXPECTED_INITIAL_SAVER_COUNT = 0;
       const numSaversBN = await christmasClubContract.numberOfSavers();
-      const numSavers = ethers.BigNumber.from(numSaversBN);
+      //each saver is 1 unit, no decimals
+      const numSavers = parseFloat(ethers.utils.formatUnits(numSaversBN, 1)); //ethers.BigNumber.from(numSaversBN);
       expect(numSavers, `Contract number of savers was ${numSavers} 
         but expected ${EXPECTED_INITIAL_SAVER_COUNT}`
       ).to.equal(EXPECTED_INITIAL_SAVER_COUNT);
@@ -88,7 +89,8 @@ describe("Christmas Club", function () {
     it("Should show the total goal amount set", async function() {
       const EXPECTED_INITIAL_GOAL_AMT = 0;
       const totalGoalAmountBN = await christmasClubContract.totalGoalAmount();
-      const totalGoalAmount = ethers.BigNumber.from(totalGoalAmountBN);
+      //USDC has 6 decimal places
+      const totalGoalAmount = parseFloat(ethers.utils.formatUnits(totalGoalAmountBN, 6)); //ethers.BigNumber.from(totalGoalAmountBN);
       expect(totalGoalAmount, `Contract goal total was ${totalGoalAmount} 
         but expected ${EXPECTED_INITIAL_GOAL_AMT}`
       ).to.equal(EXPECTED_INITIAL_GOAL_AMT);
@@ -97,7 +99,8 @@ describe("Christmas Club", function () {
     it("Should show the total amount saved", async function() {
       const EXPECTED_INITIAL_SAVINGS_AMT = 0;
       const totalAmountSavedBN = await christmasClubContract.totalAmountSaved();
-      const totalAmountSaved = ethers.BigNumber.from(totalAmountSavedBN);
+      //USDC has 6 decimal places
+      const totalAmountSaved = parseFloat(ethers.utils.formatUnits(totalAmountSavedBN, 6)); //ethers.BigNumber.from(totalGoalAmountBN);
       expect(totalAmountSaved, `Contract number of savers was ${totalAmountSaved} 
         but expected ${EXPECTED_INITIAL_SAVINGS_AMT}`
       ).to.equal(EXPECTED_INITIAL_SAVINGS_AMT);
