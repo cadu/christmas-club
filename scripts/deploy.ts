@@ -7,10 +7,15 @@ async function main() {
   const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
   const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
 
+  const christmasCCTokenFactory = await ethers.getContractFactory("ChristmasClubToken");
+  const cCTokenContract = await christmasCCTokenFactory.deploy();
+  console.log(`Christmas Club Token Contract deployed to ${cCTokenContract.address}`);
+
   const christmasClubFactory = await ethers.getContractFactory("ChristmasClub");
-  const christmasClubContract = await christmasClubFactory.deploy(unlockTime);
+  const christmasClubContract = await christmasClubFactory.deploy(unlockTime, cCTokenContract.address);
 
   await christmasClubContract.deployed();
+  console.log(`Christmas Club Contract deployed to ${christmasClubContract.address}`);
 
   /*
   const contractsDir = path.join(__dirname, "contracts");

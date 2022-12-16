@@ -17,12 +17,34 @@ const ContractTotals = () => {
 
   const {
     data: numberOfSavers,
-    isError,
-    isLoading,
+    isError: isNumSaversError,
+    isLoading: isNumSaversLoading,
   } = useContractRead({
     address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
     abi: ContractAbi.abi,
     functionName: "numberOfSavers",
+    watch: true
+  });
+
+  const {
+    data: totalGoalAmount,
+    isError: isTotalGoalError,
+    isLoading: isTotalGoalLoading,
+  } = useContractRead({
+    address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
+    abi: ContractAbi.abi,
+    functionName: "totalGoalAmount",
+    watch: true,
+  });
+
+  const {
+    data: totalAmountSaved,
+    isError: isTotalSavedError,
+    isLoading: isTotalSavedLoading,
+  } = useContractRead({
+    address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
+    abi: ContractAbi.abi,
+    functionName: "totalAmountSaved",
     watch: true,
   });
 
@@ -66,8 +88,10 @@ const ContractTotals = () => {
       <h1>Hi Cadu!</h1>
 
       <p>
-        Savers: user wallet ${address} status ${status} Total Amount Saved {}{" "}
-        Total Goal
+        user wallet ${address} status ${status} <br/>
+        Number of Savers {numberOfSavers?.toNumber()} &nbsp;&nbsp;
+        Total Amount Saved {totalAmountSaved?.toNumber()} &nbsp;&nbsp;
+        Total Goal Amount {totalGoalAmount?.toNumber()}
       </p>
       <div>{numberOfSavers?.toNumber()}</div>
       <button
