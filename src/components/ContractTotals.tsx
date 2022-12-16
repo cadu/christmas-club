@@ -8,7 +8,6 @@ import {
   useContractWrite,
   usePrepareContractWrite,
 } from "wagmi";
-import { useIsMounted } from "../hooks/useIsMounted";
 
 const ContractTotals = () => {
   // Call smart contract, fetch current value
@@ -57,8 +56,6 @@ const ContractTotals = () => {
 
   const { data: increaseSaversResult, write: writeIncrease } =
     useContractWrite(config);
-
-  const mounted = useIsMounted();
   /*
   async function fetchContractTotals() {
 
@@ -79,9 +76,7 @@ const ContractTotals = () => {
   //   console.log(getXdata);
   //   setNumberOfSavers(Number(getXdata));
   // }, [getXdata]);
-  if (!mounted) {
-    return null;
-  }
+
   //inside the return ( ... ) it's the HTML world.  Outside of return( ... ) it's TS / javascript world.
   return (
     <div>

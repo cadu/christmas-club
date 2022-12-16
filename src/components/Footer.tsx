@@ -1,10 +1,6 @@
-import React from "react";
 import Link from "next/link";
-import { AiOutlineTwitter } from "react-icons/ai";
-import { AiOutlineMedium } from "react-icons/ai";
-import { AiOutlineInstagram } from "react-icons/ai";
 
-const Footer = (props) => {
+const Footer = (props: { className: string }) => {
   return (
     <footer className={props.className}>
       <Link href="https://example.com/#contact">

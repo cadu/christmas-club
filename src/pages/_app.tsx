@@ -6,6 +6,7 @@ import { WagmiConfig, createClient } from "wagmi";
 import { mainnet, goerli, hardhat } from "wagmi/chains";
 import { ConnectKitProvider, getDefaultClient } from "connectkit";
 import CustomAvatar from "../components/CustomAvatar";
+import React from "react";
 
 const client = createClient(
   getDefaultClient({
@@ -17,6 +18,8 @@ const client = createClient(
 );
 
 const MyApp: AppType = ({ Component, pageProps }) => {
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
   return (
     <WagmiConfig client={client}>
       <ConnectKitProvider
@@ -24,9 +27,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           customAvatar: CustomAvatar,
         }}
       >
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <Layout>{mounted && <Component {...pageProps} />}</Layout>
       </ConnectKitProvider>
     </WagmiConfig>
   );

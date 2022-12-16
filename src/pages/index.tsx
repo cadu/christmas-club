@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useAccount } from "wagmi";
 import ContractTotals from "../components/ContractTotals";
+import Deposit from "../components/Deposit";
 import { useIsMounted } from "../hooks/useIsMounted";
 
 const Home: NextPage = () => {
@@ -30,6 +31,7 @@ const Home: NextPage = () => {
         {mounted && isConnecting && <div>Connecting...</div>}
 
         <ContractTotals />
+        <Deposit />
       </main>
     </>
   );

@@ -5,14 +5,21 @@ import * as path from "path";
 async function main() {
   const currentTimestampInSeconds = Math.round(Date.now() / 1000);
   const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  const ONE_HOUR_IN_SECS = 3600;
+  const unlockTime = currentTimestampInSeconds + ONE_HOUR_IN_SECS;
 
   const christmasCCTokenFactory = await ethers.getContractFactory("ChristmasClubToken");
-  const cCTokenContract = await christmasCCTokenFactory.deploy();
-  console.log(`Christmas Club Token Contract deployed to ${cCTokenContract.address}`);
+  const ccTokenContract = await christmasCCTokenFactory.deploy();
+  console.log(`Christmas Club Token Contract deployed to ${ccTokenContract.address}`);
 
+  console.log(
+    `Christmas Club Token Contract deployed to ${ccTokenContract.address}`
+  );
   const christmasClubFactory = await ethers.getContractFactory("ChristmasClub");
-  const christmasClubContract = await christmasClubFactory.deploy(unlockTime, cCTokenContract.address);
+  const christmasClubContract = await christmasClubFactory.deploy(
+    unlockTime,
+    ccTokenContract.address
+  );
 
   await christmasClubContract.deployed();
   console.log(`Christmas Club Contract deployed to ${christmasClubContract.address}`);
