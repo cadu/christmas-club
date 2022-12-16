@@ -5,10 +5,21 @@ import * as path from "path";
 async function main() {
   const currentTimestampInSeconds = Math.round(Date.now() / 1000);
   const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  const ONE_HOUR_IN_SECS = 3600;
+  const unlockTime = currentTimestampInSeconds + ONE_HOUR_IN_SECS;
 
+  const ccTokenFactory = await ethers.getContractFactory("ChristmasClubToken");
+  const ccTokenContract = await ccTokenFactory.deploy();
+  await ccTokenContract.deployed();
+
+  console.log(
+    `Christmas Club Token Contract deployed to ${ccTokenContract.address}`
+  );
   const christmasClubFactory = await ethers.getContractFactory("ChristmasClub");
-  const christmasClubContract = await christmasClubFactory.deploy(unlockTime);
+  const christmasClubContract = await christmasClubFactory.deploy(
+    unlockTime,
+    ccTokenContract.address
+  );
 
   await christmasClubContract.deployed();
 
