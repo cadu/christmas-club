@@ -1,4 +1,4 @@
-import { BigNumber, utils } from "ethers";
+import { BigNumber, utils, ethers, Contract } from "ethers";
 import {
   useAccount,
   useBalance,
@@ -6,7 +6,9 @@ import {
   useContractRead,
   useContractWrite,
   usePrepareContractWrite,
+  useProvider,
   useSigner,
+  erc20ABI,
 } from "wagmi";
 
 import CCContractAbi from "../artifacts/contracts/abis/ChristmasClub";
@@ -15,8 +17,10 @@ import tokenABI from "../../utils/CCTokenABI";
 import { useEffect, useState } from "react";
 
 const Deposit = () => {
+  let wallet: ethers.Wallet | undefined;
   const { address: userWallet } = useAccount();
   const { data: signerData } = useSigner();
+  const provider = useProvider();
   const christmasClubContract = useContract({
     address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
     abi: CCContractAbi.abi,
@@ -24,7 +28,7 @@ const Deposit = () => {
   });
   const christmasClubTokenContract = useContract({
     address: process.env.NEXT_PUBLIC_CC_TOKEN_CONTRACT_ADDRESS,
-    abi: tokenABI,
+    abi: erc20ABI,
     signerOrProvider: signerData,
   });
   const { config: mintConfig } = usePrepareContractWrite({
@@ -39,7 +43,7 @@ const Deposit = () => {
 
   const { write: mint } = useContractWrite(mintConfig);
 
-  const [depositAmount, setDepositAmount] = useState<number>(0);
+  const [depositAmount, setDepositAmount] = useState<string>("");
   const [depositMsg, setDepositMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -49,13 +53,14 @@ const Deposit = () => {
     abi: CCContractAbi.abi,
     address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
     functionName: "deposit",
+    signer: signerData,
     args: [utils.parseEther("0.01")],
-    overrides: {
-      from: userWallet,
-    },
-    // onError(err) {
-    //   setDepositMsg(err.reason);
+    // overrides: {
+    //   from: userWallet,
     // },
+    onError(err) {
+      console.log(JSON.stringify(err));
+    },
   });
 
   const {
@@ -77,14 +82,14 @@ const Deposit = () => {
   });
 
   useEffect(() => {
-    if (signerData) {
+    if (signerData && christmasClubTokenContract) {
       setErrorMsg("");
       setLoading(false);
     } else {
       setLoading(false);
       setErrorMsg("please connect your wallet");
     }
-  }, [signerData]);
+  }, [signerData, christmasClubTokenContract]);
 
   if (isLoading) return <div>Fetching balance…</div>;
 
@@ -105,20 +110,27 @@ const Deposit = () => {
 
   const handleSubmit = async (e: React.FormEvent<DepositFormElement>) => {
     e.preventDefault();
-    // setDepositAmount(parseInt(e.currentTarget.elements.depositInput.value));
-    // await deposit?.();
-    // console.log("deposit", depositIsSuccess);
-    // console.log(depositError);
+
     try {
       console.log("submiting...");
 
       setLoading(true);
-      const amount = utils.parseEther("0.01");
-      await christmasClubTokenContract?.approve(
+      // console.log(BigNumber.from(depositAmount));
+      const amount = utils.parseUnits(depositAmount, 6);
+      // console.log(amout);
+
+      const tokenContract = new Contract(
+        process.env.NEXT_PUBLIC_CC_TOKEN_CONTRACT_ADDRESS,
+        erc20ABI,
+        signerData
+      );
+      const approveTx = await tokenContract.approve(
         christmasClubContract?.address,
         amount
       );
-      const tx = await christmasClubContract?.deposit(amount);
+      const receipt = await approveTx.wait();
+
+      const tx = await christmasClubContract?.deposit(BigNumber.from(amount));
       await tx?.wait();
       setDepositMsg("");
       setLoading(false);
@@ -131,6 +143,7 @@ const Deposit = () => {
   return (
     <>
       <div>
+        {loading && <div className=" bg-red-700 text-white">Loading...</div>}
         <div>
           Your CCT Balance: {data?.formatted} {JSON.stringify(data)}
         </div>
@@ -142,10 +155,10 @@ const Deposit = () => {
           Mint
         </button>
       </div>
-      <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
         <h3>Make a deposit</h3>
         <input
-          onChange={(e) => setDepositAmount(parseInt(e.target.value))}
+          onChange={(e) => setDepositAmount(e.target.value)}
           id="depositAmount"
           type="text"
           className="p-2 border border-emerald-800 rounded-lg"
@@ -153,7 +166,7 @@ const Deposit = () => {
         {depositAmount}
         <div>{depositMsg}</div>
         <button
-          //onClick={() => deposit?.()}
+          // onClick={() => deposit?.()}
           className=" bg-green-700 text-white p-2 rounded-lg"
         >
           Deposit now
