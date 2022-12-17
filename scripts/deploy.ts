@@ -8,10 +8,10 @@ async function main() {
   const ONE_HOUR_IN_SECS = 3600;
   const unlockTime = currentTimestampInSeconds + ONE_HOUR_IN_SECS;
 
-  const christmasCCTokenFactory = await ethers.getContractFactory("ChristmasClubToken");
+  const christmasCCTokenFactory = await ethers.getContractFactory(
+    "ChristmasClubToken"
+  );
   const ccTokenContract = await christmasCCTokenFactory.deploy();
-  console.log(`Christmas Club Token Contract deployed to ${ccTokenContract.address}`);
-
   console.log(
     `Christmas Club Token Contract deployed to ${ccTokenContract.address}`
   );
@@ -22,7 +22,6 @@ async function main() {
   );
 
   await christmasClubContract.deployed();
-  console.log(`Christmas Club Contract deployed to ${christmasClubContract.address}`);
 
   /*
   const contractsDir = path.join(__dirname, "contracts");
