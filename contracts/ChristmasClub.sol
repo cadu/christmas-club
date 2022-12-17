@@ -101,16 +101,13 @@ contract ChristmasClub is Ownable {
     function deposit(uint256 amount) public {
         // Uncomment this line, and the import of "hardhat/console.sol", to print a log in your terminal
         // console.log("Unlock time is %o and block timestamp is %o", unlockTime, block.timestamp);
-        // require(block.timestamp <= unlockStartTime, "Too late to make another deposit - you can withdraw now");
+        require(block.timestamp <= unlockStartTime, "Too late to make another deposit - you can withdraw now");
 
-        // require(savingsToken.balanceOf(msg.sender) >= amount, "Your balance of USDC is too low to deposit this much");
+        require(savingsToken.balanceOf(msg.sender) >= amount, "Your balance of USDC is too low to deposit this much");
 
         // console.log("depositing:",amount);
 
         //transferFrom their balance to the club for safe keeping
-        // savingsToken.transfer(address(this), amount);
-        
-        // savingsToken.approve(address(this), amount+10);
         savingsToken.transferFrom(msg.sender, address(this), amount);
 
         saverAmounts[msg.sender] += amount;
