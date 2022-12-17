@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useAccount } from "wagmi";
 import ContractTotals from "../components/ContractTotals";
 import Deposit from "../components/Deposit";
+import Withdraw from "../components/Withdraw";
 import { useIsMounted } from "../hooks/useIsMounted";
 
 const Home: NextPage = () => {
@@ -32,6 +33,7 @@ const Home: NextPage = () => {
 
         <ContractTotals />
         <Deposit />
+        <Withdraw />
       </main>
     </>
   );

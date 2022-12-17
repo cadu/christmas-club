@@ -5,25 +5,31 @@ import * as path from "path";
 async function main() {
   const currentTimestampInSeconds = Math.round(Date.now() / 1000);
   const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
+  const THREE_MINUTES_IN_SECS = 60 * 3;
   const ONE_HOUR_IN_SECS = 3600;
-  const unlockTime = currentTimestampInSeconds + ONE_HOUR_IN_SECS;
+  //fast unlock for testing withdraw
+  const unlockTime = currentTimestampInSeconds + THREE_MINUTES_IN_SECS;
+  //normal unlock
+  //const unlockTime = currentTimestampInSeconds + ONE_HOUR_IN_SECS;
 
   const christmasCCTokenFactory = await ethers.getContractFactory("ChristmasClubToken");
   const ccTokenContract = await christmasCCTokenFactory.deploy();
-  console.log(`Christmas Club Token Contract deployed to ${ccTokenContract.address}`);
-
   console.log(
     `Christmas Club Token Contract deployed to ${ccTokenContract.address}`
   );
+  
   const christmasClubFactory = await ethers.getContractFactory("ChristmasClub");
   const christmasClubContract = await christmasClubFactory.deploy(
     unlockTime,
     ccTokenContract.address
   );
 
-  await christmasClubContract.deployed();
-  console.log(`Christmas Club Contract deployed to ${christmasClubContract.address}`);
-
+  const contractUnlockStartTimeBN =
+    await christmasClubContract.unlockStartTime();
+  const contractUnlockStartTime = ethers.BigNumber.from(
+    contractUnlockStartTimeBN
+  );
+  console.log(`Unlock start time is ${contractUnlockStartTime}`);
   /*
   const contractsDir = path.join(__dirname, "contracts");
 

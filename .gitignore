@@ -50,3 +50,4 @@ artifacts
 #No need to push install-state.gz to users who don't need it.
 .yarn/install-state.gz
 yarn.lock
+utils/CCTokenABI3.ts
