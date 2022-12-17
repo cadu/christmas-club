@@ -5,6 +5,7 @@ import ContractTotals from "../components/ContractTotals";
 import Deposit from "../components/Deposit";
 import { useIsMounted } from "../hooks/useIsMounted";
 import SaverBalance from "../components/SaverBalance";
+import SetGoal from "../components/SetGoal";
 
 const Home: NextPage = () => {
   const { isConnecting, isDisconnected } = useAccount();
@@ -34,6 +35,7 @@ const Home: NextPage = () => {
         <ContractTotals />
         <SaverBalance />
         <Deposit />
+        <SetGoal />
       </main>
     </>
   );
