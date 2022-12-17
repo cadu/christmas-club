@@ -4,6 +4,7 @@ import { useAccount } from "wagmi";
 import ContractTotals from "../components/ContractTotals";
 import Deposit from "../components/Deposit";
 import { useIsMounted } from "../hooks/useIsMounted";
+import SaverBalance from "../components/SaverBalance";
 
 const Home: NextPage = () => {
   const { isConnecting, isDisconnected } = useAccount();
@@ -31,6 +32,7 @@ const Home: NextPage = () => {
         {mounted && isConnecting && <div>Connecting...</div>}
 
         <ContractTotals />
+        <SaverBalance />
         <Deposit />
       </main>
     </>
