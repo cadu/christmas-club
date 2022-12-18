@@ -87,14 +87,16 @@ contract ChristmasClub is Ownable {
         // console.log("Unlock time is %o and block timestamp is %o", unlockTime, block.timestamp);
 
         require(block.timestamp >= unlockStartTime, "You can't withdraw yet");
-
-        require(saverAmounts[address(msg.sender)] >= 0, "You must have savings to withdraw");
+        require(saverAmounts[address(msg.sender)] > 0, "You must have savings to withdraw");
         
         uint256 withdrawalAmount = saverAmounts[address(msg.sender)];
-        
+
+        //reduce the saver's amount saved by the amount withdrawn
+        saverAmounts[msg.sender] -= withdrawalAmount;
+        //reduce the overall amount saved in the contract by the amount withdrawn
         totalAmountSaved -= withdrawalAmount;
 
-        savingsToken.transferFrom(address(this), msg.sender, withdrawalAmount);
+        savingsToken.transfer(msg.sender, withdrawalAmount);
 
         emit Withdrawal(address(msg.sender), withdrawalAmount, block.timestamp);
 
