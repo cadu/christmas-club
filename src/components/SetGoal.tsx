@@ -62,8 +62,9 @@ const SetGoal = () => {
       <legend className="p-2 font-bold">Goal</legend>
       <div className="flex flex-col gap-2 max-w-4xl">
         <div>
-          Current goal:{" "}
-          <span className="font-bold">{saverGoal.toNumber()}</span>
+          Current goal:{" "} {saverGoal && 
+            <span className="font-bold">{saverGoal.toNumber()}</span>
+          }
         </div>
         <form
           className="flex flex-col gap-2"
@@ -100,7 +101,7 @@ const SetGoal = () => {
           )}
           {isSuccess && (
             <div className=" bg-green-600 text-white rounded p-2">
-              Successfully setted your goal!
+              You have successfully set your goal!
               <div>
                 Check the tx on{" "}
                 <Link
