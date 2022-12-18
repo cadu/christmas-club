@@ -20,6 +20,11 @@ interface ICCToken {
     function balanceOf(address account) external returns (uint256);
 }
 
+//Impl courtesy of https://github.com/pipermerriam/ethereum-datetime
+interface MonthAPI {
+    function getMonth(uint timestamp) external view returns (uint8);
+}
+
 
 contract ChristmasClub is Ownable {
     ///@notice future from now, matching 01/Dec of the year. 
@@ -36,11 +41,17 @@ contract ChristmasClub is Ownable {
 
     uint256 public totalAmountSaved = 0;
 
+    uint256 private overrideWithdrawalTrueUntil = 0;
+
+    uint256 private overrideWithdrawalFalseUntil = 0;
+
     mapping (address => uint256) saverAmounts;
 
     mapping (address => uint256) goalAmounts;
 
-    string constant unlockDate = '01/Dec/' ;      
+    string constant unlockDate = '01/Dec/' ;    
+
+    uint256 constant FIVE_MINUTES_IN_SECONDS = 60 * 5;
 
     /*
     parse() {
@@ -54,12 +65,14 @@ contract ChristmasClub is Ownable {
     */
 
     ICCToken public savingsToken;
+    
+    MonthAPI public monthTeller;
 
     event Withdrawal(address saver, uint amount, uint when);
 
     event Deposit(address saver, uint amount, uint when);
 
-    constructor(uint256 _unlockStartTime, address _savingsToken) {
+    constructor(uint256 _unlockStartTime, address _savingsToken, address _monthAPIImpl) {
         require(
             block.timestamp < _unlockStartTime,
             "Unlock start time should be in the future"
@@ -67,6 +80,7 @@ contract ChristmasClub is Ownable {
 
         unlockStartTime = _unlockStartTime;
         savingsToken = ICCToken(_savingsToken);
+        monthTeller = MonthAPI(_monthAPIImpl);
     }
 
     function increaseSavers(uint256 _num) public returns (uint256) {
@@ -126,7 +140,32 @@ contract ChristmasClub is Ownable {
     function getSaverAmount() view external returns (uint256 amount) {
         amount = saverAmounts[msg.sender];
     }
+
     function getSaverGoal() view external returns (uint256 amount) {
         amount = goalAmounts[msg.sender];
+    }
+
+    function overrideWithdrawForDemo(bool inWithdrawalPeriod) public onlyOwner {
+        if (inWithdrawalPeriod) {
+            //set true for 5 minutes
+            overrideWithdrawalFalseUntil = 0;
+            overrideWithdrawalTrueUntil = (block.timestamp + FIVE_MINUTES_IN_SECONDS);
+        } else { 
+            //set false for 5 minutes
+            overrideWithdrawalFalseUntil = (block.timestamp + FIVE_MINUTES_IN_SECONDS);
+            overrideWithdrawalTrueUntil = 0;
+
+        }
+    }
+    function isInWithdrawPeriod() view external returns(bool ) {
+        //check the demo overrides first
+        if (overrideWithdrawalFalseUntil > block.timestamp) {
+            return false;
+        }
+        if (overrideWithdrawalTrueUntil > block.timestamp) {
+            return true;
+        }
+        //if neither override is in effect, get the December test result
+        return (monthTeller.getMonth(block.timestamp) == 12);
     }
 }
