@@ -19,22 +19,30 @@ async function main() {
   console.log(
     `Christmas Club Token Contract deployed to ${ccTokenContract.address}`
   );
-  
+
+  const dateTimeFactory  = await ethers.getContractFactory("DateTime");
+  const dateTimeContract = await dateTimeFactory.deploy();
+  await dateTimeContract.deployed();
+  console.log(
+    `Date Time Contract deployed to ${dateTimeContract.address}`
+  );
+
   const christmasClubFactory = await ethers.getContractFactory("ChristmasClub");
   const christmasClubContract = await christmasClubFactory.deploy(
-    unlockTime,
-    ccTokenContract.address
+    //unlockTime,
+    ccTokenContract.address,
+    dateTimeContract.address
   );
 
   await christmasClubContract.deployed();
   
-  const contractUnlockStartTimeBN =
+  /*const contractUnlockStartTimeBN =
     await christmasClubContract.unlockStartTime();
   const contractUnlockStartTime = ethers.BigNumber.from(
     contractUnlockStartTimeBN
   );
   console.log(`Unlock start time is ${contractUnlockStartTime}`);
-
+  */
   await christmasClubContract.deployed();
   
 
