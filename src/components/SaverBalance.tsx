@@ -58,7 +58,8 @@ const SaverBalance = () => {
         </button>
       </div>
       <div>
-        Your Contract Balance: {utils.formatUnits(ccBalanceData?.toString(), 6)}
+        Your Contract Balance:{" "}
+        {ccBalanceData && utils.formatUnits(ccBalanceData?.toString(), 6)}
       </div>
     </>
   );

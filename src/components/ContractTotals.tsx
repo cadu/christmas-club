@@ -22,7 +22,7 @@ const ContractTotals = () => {
     address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
     abi: ContractAbi.abi,
     functionName: "numberOfSavers",
-    watch: true
+    watch: true,
   });
 
   const {
@@ -47,15 +47,6 @@ const ContractTotals = () => {
     watch: true,
   });
 
-  const { config } = usePrepareContractWrite({
-    address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
-    abi: ContractAbi.abi,
-    functionName: "increaseSavers",
-    args: [BigNumber.from(1)],
-  });
-
-  const { data: increaseSaversResult, write: writeIncrease } =
-    useContractWrite(config);
   /*
   async function fetchContractTotals() {
 
@@ -80,22 +71,12 @@ const ContractTotals = () => {
   //inside the return ( ... ) it's the HTML world.  Outside of return( ... ) it's TS / javascript world.
   return (
     <div>
-      <h1>Hi Cadu!</h1>
-
       <p>
-        user wallet ${address} status ${status} <br/>
-        Number of Savers {numberOfSavers?.toNumber()} &nbsp;&nbsp;
-        Total Amount Saved {totalAmountSaved?.toNumber()} &nbsp;&nbsp;
-        Total Goal Amount {totalGoalAmount?.toNumber()}
+        user wallet ${address} status ${status} <br />
+        Number of Savers {numberOfSavers?.toNumber()} &nbsp;&nbsp; Total Amount
+        Saved {totalAmountSaved?.toNumber()} &nbsp;&nbsp; Total Goal Amount{" "}
+        {totalGoalAmount?.toNumber()}
       </p>
-      <div>{numberOfSavers?.toNumber()}</div>
-      <button
-        className=" bg-green-600 text-white p-1 rounded-md"
-        disabled={!writeIncrease}
-        onClick={() => writeIncrease?.()}
-      >
-        Increase
-      </button>
     </div>
   );
 };

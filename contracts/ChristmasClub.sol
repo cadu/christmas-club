@@ -69,11 +69,6 @@ contract ChristmasClub is Ownable {
         savingsToken = ICCToken(_savingsToken);
     }
 
-    function increaseSavers(uint256 _num) public returns (uint256) {
-        numberOfSavers += _num;
-        return numberOfSavers;
-    }
-
     function setGoal(uint256 goalAmount) public {
 
         require(goalAmount > 0, "You must have a savings goal greater than zero");

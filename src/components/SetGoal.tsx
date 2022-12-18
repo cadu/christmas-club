@@ -58,12 +58,12 @@ const SetGoal = () => {
   });
 
   return (
-    <fieldset className="border p-2 rounded ">
+    <fieldset data-aos="fade-up" className="border p-2 rounded ">
       <legend className="p-2 font-bold">Goal</legend>
       <div className="flex flex-col gap-2 max-w-4xl">
         <div>
           Current goal:{" "}
-          <span className="font-bold">{saverGoal.toNumber()}</span>
+          <span className="font-bold">{saverGoal && saverGoal.toNumber()}</span>
         </div>
         <form
           className="flex flex-col gap-2"
@@ -87,10 +87,7 @@ const SetGoal = () => {
             id="setGoal"
             className="rounded border focus:outline-none focus:border-green-800 border-gray-400 py-1 px-2"
           />
-          <button
-            disabled={!write || isLoadingSetGoal}
-            className="bg-green-700 text-white p-2 rounded-lg disabled:bg-gray-600 border focus:outline-none focus:border-green-800"
-          >
+          <button disabled={!write || isLoadingSetGoal} className="button">
             {isLoadingSetGoal ? "Setting your goal..." : "Set my goal"}
           </button>
           {goalMsg && (
