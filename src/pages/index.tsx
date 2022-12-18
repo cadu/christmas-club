@@ -37,6 +37,7 @@ const Home: NextPage = () => {
         <SetGoal />
         <Deposit />
         <Withdraw />
+        <SetGoal />
       </main>
     </>
   );
