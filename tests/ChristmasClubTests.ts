@@ -66,7 +66,7 @@ describe("Christmas Club", function () {
       const christmasClubFactory = new ChristmasClub__factory(accounts[0]);
       await expect(
         christmasClubFactory.deploy(
-          unlockStartTimeSecondsBN,
+          //unlockStartTimeSecondsBN,
           christmasClubToken.address,
           dateTimeContract.address
         ),
@@ -74,7 +74,7 @@ describe("Christmas Club", function () {
       ).to.be.revertedWith("Unlock start time should be in the future");
     });
   });
-
+  /*
   describe("Deployment - future", function () {
     let accounts: SignerWithAddress[];
     let christmasClubContract: ChristmasClub;
@@ -99,7 +99,7 @@ describe("Christmas Club", function () {
       await deployDateTimeContract(accounts[0]);
       const christmasClubFactory = new ChristmasClub__factory(accounts[0]);
       christmasClubContract = await christmasClubFactory.deploy(
-        unlockStartTimeSecondsBN,
+        //unlockStartTimeSecondsBN,
         christmasClubTokenContract.address,
         dateTimeContract.address
       );
@@ -116,13 +116,14 @@ describe("Christmas Club", function () {
         `Contract unlock start time was 
         ${contractUnlockStartTime} but expected ${unlockStartTimeSeconds}`
       ).to.equal(unlockStartTimeSeconds);
-    });
-    /* //no public owner atm
+    }); 
+    
+    //no public owner atm
     it("Should set the right owner", async function () {
       expect(await christmasClubContract.owner()).to.equal(
         accounts[0]?.address
       );
-    });
+    }); 
   }); */
 
   describe("Contract totals", async function () {
@@ -155,7 +156,7 @@ describe("Christmas Club", function () {
         const unlockStartTimeSecondsBN = ethers.BigNumber.from(unlockStartTimeSeconds);
         const christmasClubFactory = new ChristmasClub__factory(accounts[0]);
         christmasClubContract = await christmasClubFactory.deploy(
-          unlockStartTimeSecondsBN,
+          //unlockStartTimeSecondsBN,
           christmasClubTokenContract.address,
           dateTimeContract.address
         );
@@ -231,8 +232,6 @@ describe("Christmas Club", function () {
     });    
   });
 
-  });
-
   describe("Deposit", function () {
     beforeEach(async function () {
       accounts = await ethers.getSigners();
@@ -251,7 +250,7 @@ describe("Christmas Club", function () {
 
       const christmasClubFactory = new ChristmasClub__factory(accounts[0]);
       christmasClubContract = await christmasClubFactory.deploy(
-        unlockStartTimeSecondsBN,
+        //unlockStartTimeSecondsBN,
         christmasClubTokenContract.address,
         dateTimeContract.address
       );
@@ -305,7 +304,7 @@ describe("Christmas Club", function () {
 
       const christmasClubFactory = new ChristmasClub__factory(accounts[0]);
       christmasClubContract = await christmasClubFactory.deploy(
-        unlockStartTimeSecondsBN,
+        //unlockStartTimeSecondsBN,
         christmasClubTokenContract.address,
         dateTimeContract.address
       );

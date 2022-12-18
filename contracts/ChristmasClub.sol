@@ -27,8 +27,6 @@ interface MonthAPI {
 
 
 contract ChristmasClub is Ownable {
-    ///@notice future from now, matching 01/Dec of the year. 
-    uint256 public unlockStartTime;
     
     ///@notice future from now, matching very end of 31/Dec of the year.
     //If now is > unlockEndTime, then we're in the next year so bump forward
@@ -48,8 +46,6 @@ contract ChristmasClub is Ownable {
     mapping (address => uint256) saverAmounts;
 
     mapping (address => uint256) goalAmounts;
-
-    string constant unlockDate = '01/Dec/' ;    
 
     uint256 constant FIVE_MINUTES_IN_SECONDS = 60 * 5;
 
@@ -72,13 +68,8 @@ contract ChristmasClub is Ownable {
 
     event Deposit(address saver, uint amount, uint when);
 
-    constructor(uint256 _unlockStartTime, address _savingsToken, address _monthAPIImpl) {
-        require(
-            block.timestamp < _unlockStartTime,
-            "Unlock start time should be in the future"
-        );
-
-        unlockStartTime = _unlockStartTime;
+    constructor(address _savingsToken, address _monthAPIImpl) {
+        
         savingsToken = ICCToken(_savingsToken);
         monthTeller = MonthAPI(_monthAPIImpl);
     }
@@ -101,7 +92,7 @@ contract ChristmasClub is Ownable {
         // Uncomment this line, and the import of "hardhat/console.sol", to print a log in your terminal
         // console.log("Unlock time is %o and block timestamp is %o", unlockTime, block.timestamp);
 
-        require(block.timestamp >= unlockStartTime, "You can't withdraw yet");
+        require(isInWithdrawPeriod(), "You can't withdraw yet");
         require(saverAmounts[address(msg.sender)] > 0, "You must have savings to withdraw");
         
         uint256 withdrawalAmount = saverAmounts[address(msg.sender)];
@@ -120,7 +111,7 @@ contract ChristmasClub is Ownable {
     function deposit(uint256 amount) public {
         // Uncomment this line, and the import of "hardhat/console.sol", to print a log in your terminal
         // console.log("Unlock time is %o and block timestamp is %o", unlockTime, block.timestamp);
-        require(block.timestamp <= unlockStartTime, "Too late to make another deposit - you can withdraw now");
+        require(!isInWithdrawPeriod(), "Too late to make another deposit this year - you can withdraw now");
 
         require(savingsToken.balanceOf(msg.sender) >= amount, "Your balance of USDC is too low to deposit this much");
 
@@ -157,7 +148,7 @@ contract ChristmasClub is Ownable {
 
         }
     }
-    function isInWithdrawPeriod() view external returns(bool ) {
+    function isInWithdrawPeriod() view public returns(bool ) {
         //check the demo overrides first
         if (overrideWithdrawalFalseUntil > block.timestamp) {
             return false;
