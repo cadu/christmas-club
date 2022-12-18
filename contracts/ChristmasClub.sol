@@ -79,6 +79,7 @@ contract ChristmasClub is Ownable {
         require(goalAmount > 0, "You must have a savings goal greater than zero");
 
         goalAmounts[msg.sender] = goalAmount;
+        totalGoalAmount += goalAmount;
 
     }
 
@@ -124,5 +125,8 @@ contract ChristmasClub is Ownable {
 
     function getSaverAmount() view external returns (uint256 amount) {
         amount = saverAmounts[msg.sender];
+    }
+    function getSaverGoal() view external returns (uint256 amount) {
+        amount = goalAmounts[msg.sender];
     }
 }
