@@ -13,7 +13,7 @@ const SaverBalance = () => {
   const { address: saverAddress } = useAccount();
 
   const { data, isError, isLoading, error } = useBalance({
-    token: process.env.NEXT_PUBLIC_CC_TOKEN_CONTRACT_ADDRESS,
+    token: `0x${process.env.NEXT_PUBLIC_CC_TOKEN_CONTRACT_ADDRESS_NO0X}`,
     address: saverAddress,
     watch: true,
   });
@@ -57,10 +57,12 @@ const SaverBalance = () => {
           {mintLoading ? "Minting..." : "Mint"}
         </button>
       </div>
+      {ccBalanceData &&
       <div>
         Your Contract Balance:{" "}
         {ccBalanceData && utils.formatUnits(ccBalanceData?.toString(), 6)}
       </div>
+      }
     </>
   );
 };

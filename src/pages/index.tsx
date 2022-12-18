@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useAccount } from "wagmi";
 import ContractTotals from "../components/ContractTotals";
 import Deposit from "../components/Deposit";
+import Withdraw from "../components/Withdraw";
 import SaverBalance from "../components/SaverBalance";
 import SetGoal from "../components/SetGoal";
 import Player from "../components/Player";
@@ -38,6 +39,8 @@ const Home: NextPage = () => {
         <SaverBalance />
         <SetGoal />
         <Deposit />
+        <Withdraw />
+        <SetGoal />
       </main>
     </>
   );

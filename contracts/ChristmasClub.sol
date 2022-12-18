@@ -20,10 +20,13 @@ interface ICCToken {
     function balanceOf(address account) external returns (uint256);
 }
 
+//Impl courtesy of https://github.com/pipermerriam/ethereum-datetime
+interface MonthAPI {
+    function getMonth(uint timestamp) external view returns (uint8);
+}
+
 
 contract ChristmasClub is Ownable {
-    ///@notice future from now, matching 01/Dec of the year. 
-    uint256 public unlockStartTime;
     
     ///@notice future from now, matching very end of 31/Dec of the year.
     //If now is > unlockEndTime, then we're in the next year so bump forward
@@ -36,11 +39,15 @@ contract ChristmasClub is Ownable {
 
     uint256 public totalAmountSaved = 0;
 
+    uint256 private overrideWithdrawalTrueUntil = 0;
+
+    uint256 private overrideWithdrawalFalseUntil = 0;
+
     mapping (address => uint256) saverAmounts;
 
     mapping (address => uint256) goalAmounts;
 
-    string constant unlockDate = '01/Dec/' ;      
+    uint256 constant FIVE_MINUTES_IN_SECONDS = 60 * 5;
 
     /*
     parse() {
@@ -54,19 +61,17 @@ contract ChristmasClub is Ownable {
     */
 
     ICCToken public savingsToken;
+    
+    MonthAPI public monthTeller;
 
     event Withdrawal(address saver, uint amount, uint when);
 
     event Deposit(address saver, uint amount, uint when);
 
-    constructor(uint256 _unlockStartTime, address _savingsToken) {
-        require(
-            block.timestamp < _unlockStartTime,
-            "Unlock start time should be in the future"
-        );
-
-        unlockStartTime = _unlockStartTime;
+    constructor(address _savingsToken, address _monthAPIImpl) {
+        
         savingsToken = ICCToken(_savingsToken);
+        monthTeller = MonthAPI(_monthAPIImpl);
     }
 
     function setGoal(uint256 goalAmount) public {
@@ -82,15 +87,17 @@ contract ChristmasClub is Ownable {
         // Uncomment this line, and the import of "hardhat/console.sol", to print a log in your terminal
         // console.log("Unlock time is %o and block timestamp is %o", unlockTime, block.timestamp);
 
-        require(block.timestamp >= unlockStartTime, "You can't withdraw yet");
-
-        require(saverAmounts[address(msg.sender)] >= 0, "You must have savings to withdraw");
+        require(isInWithdrawPeriod(), "You can't withdraw yet");
+        require(saverAmounts[address(msg.sender)] > 0, "You must have savings to withdraw");
         
         uint256 withdrawalAmount = saverAmounts[address(msg.sender)];
-        
+
+        //reduce the saver's amount saved by the amount withdrawn
+        saverAmounts[msg.sender] -= withdrawalAmount;
+        //reduce the overall amount saved in the contract by the amount withdrawn
         totalAmountSaved -= withdrawalAmount;
 
-        savingsToken.transferFrom(address(this), msg.sender, withdrawalAmount);
+        savingsToken.transfer(msg.sender, withdrawalAmount);
 
         emit Withdrawal(address(msg.sender), withdrawalAmount, block.timestamp);
 
@@ -99,7 +106,7 @@ contract ChristmasClub is Ownable {
     function deposit(uint256 amount) public {
         // Uncomment this line, and the import of "hardhat/console.sol", to print a log in your terminal
         // console.log("Unlock time is %o and block timestamp is %o", unlockTime, block.timestamp);
-        require(block.timestamp <= unlockStartTime, "Too late to make another deposit - you can withdraw now");
+        require(!isInWithdrawPeriod(), "Too late to make another deposit this year - you can withdraw now");
 
         require(savingsToken.balanceOf(msg.sender) >= amount, "Your balance of USDC is too low to deposit this much");
 
@@ -119,7 +126,32 @@ contract ChristmasClub is Ownable {
     function getSaverAmount() view external returns (uint256 amount) {
         amount = saverAmounts[msg.sender];
     }
+
     function getSaverGoal() view external returns (uint256 amount) {
         amount = goalAmounts[msg.sender];
+    }
+
+    function overrideWithdrawForDemo(bool inWithdrawalPeriod) public onlyOwner {
+        if (inWithdrawalPeriod) {
+            //set true for 5 minutes
+            overrideWithdrawalFalseUntil = 0;
+            overrideWithdrawalTrueUntil = (block.timestamp + FIVE_MINUTES_IN_SECONDS);
+        } else { 
+            //set false for 5 minutes
+            overrideWithdrawalFalseUntil = (block.timestamp + FIVE_MINUTES_IN_SECONDS);
+            overrideWithdrawalTrueUntil = 0;
+
+        }
+    }
+    function isInWithdrawPeriod() view public returns(bool ) {
+        //check the demo overrides first
+        if (overrideWithdrawalFalseUntil > block.timestamp) {
+            return false;
+        }
+        if (overrideWithdrawalTrueUntil > block.timestamp) {
+            return true;
+        }
+        //if neither override is in effect, get the December test result
+        return (monthTeller.getMonth(block.timestamp) == 12);
     }
 }
