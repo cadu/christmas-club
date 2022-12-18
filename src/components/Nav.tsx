@@ -29,6 +29,9 @@ const Nav = () => {
         <Link href="/">
           <a>Christmas Club</a>
         </Link>
+        <Link href="/explainer">
+          <a>What is Christmas Club?</a>
+        </Link>
         {menuItems.map((menu) => (
           <Link key={menu.link} href={menu.link}>
             {menu.text}
