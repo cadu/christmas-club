@@ -8,6 +8,7 @@ import SaverBalance from "../components/SaverBalance";
 import SetGoal from "../components/SetGoal";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import InWithdrawalPeriod from "../components/InWithdrawalPeriod";
 
 const Home: NextPage = () => {
   AOS.init();
@@ -37,7 +38,7 @@ const Home: NextPage = () => {
         <SetGoal />
         <Deposit />
         <Withdraw />
-        <SetGoal />
+        <InWithdrawalPeriod />
       </main>
     </>
   );
