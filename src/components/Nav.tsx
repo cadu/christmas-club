@@ -15,11 +15,7 @@ const Nav = () => {
     {
       link: "/demo",
       text: "Demo",
-    },
-    {
-      link: "/#menu2",
-      text: "Menu 2",
-    },
+    }
   ];
 
   return (

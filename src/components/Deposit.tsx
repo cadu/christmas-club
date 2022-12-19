@@ -113,31 +113,29 @@ const Deposit = () => {
           <div className="rounded p-2 bg-teal-800 text-white">Loading...</div>
         )}
       </div>
-      <fieldset
-        data-aos="fade-up"
-        data-aos-delay="300"
-        className="border p-2 rounded "
-      >
-        <legend className="p-2 font-bold">Make a deposit</legend>
-        <div className="flex flex-col gap-2 max-w-4xl">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-            {depositMsg && (
-              <div className=" bg-orange-600 text-white rounded p-2">
-                {depositMsg}
-              </div>
-            )}
-            <input
-              onChange={(e) => setDepositAmount(e.target.value)}
-              id="depositAmount"
-              type="text"
-              className="p-2 border border-emerald-800 rounded-lg"
-            />
 
-            <button className="button">Deposit now</button>
-            <div>{errorMsg}</div>
-          </form>
-        </div>
-      </fieldset>
+      <div
+        data-aos="fade-right"
+        data-aos-delay="300"
+        className="flex flex-col gap-2"
+      >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+          {depositMsg && (
+            <div className=" bg-orange-600 text-white rounded p-2">
+              {depositMsg}
+            </div>
+          )}
+          <input
+            onChange={(e) => setDepositAmount(e.target.value)}
+            id="depositAmount"
+            type="text"
+            className="rounded border focus:outline-none focus:border-green-800 border-gray-400 p-2"
+          />
+
+          <button className="button">Deposit now</button>
+          <div>{errorMsg}</div>
+        </form>
+      </div>
     </>
   );
 };

@@ -25,21 +25,41 @@ const Home: NextPage = () => {
   }, [chain]);
 
   if (isDisconnected) return <div>Disconnected</div>;
-  // console.log(chain.id);
 
   return (
     <>
       <main className="container mx-auto flex flex-col max-w-4xl pt-6">
         {isConnecting && <div>Connecting...</div>}
 
-      <main className="container mx-auto flex flex-col max-w-4xl p-4">
-        {isConnecting && <div>Connecting...</div>}
-
-        <ContractTotals />
-        <SaverBalance />
-        <SetGoal />
-        <Deposit />
-        <Withdraw />
+        <div className="flex justify-between">
+          <ContractTotals />
+          <SaverBalance />
+        </div>
+        <div className="flex flex-col gap-12 pt-12">
+          <div className="flex flex-row  justify-evenly items-center">
+            <label htmlFor="setGoal" data-aos="fade-left">
+              Set your goal for Christmas Club
+            </label>
+            <SetGoal />
+          </div>
+          <div className="flex flex-row justify-evenly items-center">
+            <Deposit />
+            <label
+              htmlFor="depositAmount"
+              data-aos="fade-right"
+              data-aos-delay="310"
+              className=""
+            >
+              Start saving today and keep track of your progress...
+            </label>
+          </div>
+          <div className="flex justify-evenly items-center">
+            <div data-aos="fade-right" data-aos-delay="450">
+              ...withdraw your savings and enjoy the festives!
+            </div>
+            <Withdraw />
+          </div>
+        </div>
       </main>
     </>
   );
