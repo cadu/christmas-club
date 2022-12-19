@@ -6,6 +6,7 @@ import Deposit from "../components/Deposit";
 import Withdraw from "../components/Withdraw";
 import SaverBalance from "../components/SaverBalance";
 import SetGoal from "../components/SetGoal";
+import InWithdrawalPeriod from "../components/InWithdrawalPeriod";
 
 const Home: NextPage = () => {
   const { isConnecting, isDisconnected } = useAccount();
@@ -23,6 +24,7 @@ const Home: NextPage = () => {
         <SetGoal />
         <Deposit />
         <Withdraw />
+        <InWithdrawalPeriod />
       </main>
     </>
   );
