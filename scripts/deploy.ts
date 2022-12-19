@@ -20,12 +20,10 @@ async function main() {
     `Christmas Club Token Contract deployed to ${ccTokenContract.address}`
   );
 
-  const dateTimeFactory  = await ethers.getContractFactory("DateTime");
+  const dateTimeFactory = await ethers.getContractFactory("DateTime");
   const dateTimeContract = await dateTimeFactory.deploy();
   await dateTimeContract.deployed();
-  console.log(
-    `Date Time Contract deployed to ${dateTimeContract.address}`
-  );
+  console.log(`Date Time Contract deployed to ${dateTimeContract.address}`);
 
   const christmasClubFactory = await ethers.getContractFactory("ChristmasClub");
   const christmasClubContract = await christmasClubFactory.deploy(
@@ -35,7 +33,7 @@ async function main() {
   );
 
   await christmasClubContract.deployed();
-  
+
   /*const contractUnlockStartTimeBN =
     await christmasClubContract.unlockStartTime();
   const contractUnlockStartTime = ethers.BigNumber.from(
@@ -43,8 +41,7 @@ async function main() {
   );
   console.log(`Unlock start time is ${contractUnlockStartTime}`);
   */
-  await christmasClubContract.deployed();
-  
+  // await christmasClubContract.deployed();
 
   /*
   const contractsDir = path.join(__dirname, "contracts");

@@ -29,7 +29,7 @@ const SaverBalance = () => {
     );
   return (
     <>
-      <div className="flex flex-col items-end justify-end gap-2 rounded-md p-3 bg-gradient-to-t from-slate-200 to-slate-100">
+      <div className="flex flex-col items-end justify-end gap-2 rounded-md p-3 bg-gray-100 border border-gray-800 bg-opacity-40">
         <div>Your USDC Balance: {data?.formatted}</div>
         {ccBalanceData && (
           <div>

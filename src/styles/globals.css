@@ -1,3 +1,14 @@
+@import "./button.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+canvas {
+  top: 0;
+  left: 0;
+  position: absolute;
+  z-index: -1;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}

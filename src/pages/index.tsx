@@ -5,10 +5,13 @@ import Deposit from "../components/Deposit";
 import Withdraw from "../components/Withdraw";
 import SaverBalance from "../components/SaverBalance";
 import SetGoal from "../components/SetGoal";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
 
 const Home: NextPage = () => {
+  AOS.init();
   const { isConnecting, isDisconnected } = useAccount();
   const { chain } = useNetwork();
 
@@ -22,7 +25,6 @@ const Home: NextPage = () => {
   }, [chain]);
 
   if (isDisconnected) return <div>Disconnected</div>;
-  // console.log(chain.id);
 
   return (
     <>
@@ -33,9 +35,31 @@ const Home: NextPage = () => {
           <ContractTotals />
           <SaverBalance />
         </div>
-        <SetGoal />
-        <Deposit />
-        <Withdraw />
+        <div className="flex flex-col gap-12 pt-12">
+          <div className="flex flex-row  justify-evenly items-center">
+            <label htmlFor="setGoal" data-aos="fade-left">
+              Set your goal for Christmas Club
+            </label>
+            <SetGoal />
+          </div>
+          <div className="flex flex-row justify-evenly items-center">
+            <Deposit />
+            <label
+              htmlFor="depositAmount"
+              data-aos="fade-right"
+              data-aos-delay="310"
+              className=""
+            >
+              Start saving today and keep track of your progress...
+            </label>
+          </div>
+          <div className="flex justify-evenly items-center">
+            <div data-aos="fade-right" data-aos-delay="450">
+              ...withdraw your savings and enjoy the festives!
+            </div>
+            <Withdraw />
+          </div>
+        </div>
       </main>
     </>
   );
