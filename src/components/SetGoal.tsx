@@ -7,12 +7,13 @@ import {
 } from "wagmi";
 import { utils, BigNumber } from "ethers";
 import CCContractAbi from "../artifacts/contracts/abis/ChristmasClub";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import useDebounce from "../hooks/useDebounce";
 
 const SetGoal = () => {
   const [goal, setGoal] = useState<number>(0);
+  const [saverGoalAmountForDisplay, setSaverGoalAmountForDisplay] = useState<string>("");
   const debouncedGoal = useDebounce(goal, 500);
   const [goalMsg, setGoalMsg] = useState("");
 
@@ -22,6 +23,15 @@ const SetGoal = () => {
     functionName: "getSaverGoal",
     watch: true,
   });
+  //show 6 digit USDC as a USD / EUR 2 digit currency, without using ethers
+  useEffect(() => {
+    console.log('useEffect ran. saverGoal is: ', saverGoal);
+    setSaverGoalAmountForDisplay((
+      (
+        parseFloat(saverGoal.toString()) / 1000000
+      ).toFixed(2)).toString()
+    )
+  }, [saverGoal]);
 
   const {
     config,
@@ -31,7 +41,7 @@ const SetGoal = () => {
     address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
     abi: CCContractAbi.abi,
     functionName: "setGoal",
-    args: [BigNumber.from(debouncedGoal)],
+    args: [utils.parseUnits(debouncedGoal.toString(), 6)],
     enabled: Boolean(debouncedGoal),
     // onSuccess(data) {
     //   alert("foi");
@@ -44,6 +54,7 @@ const SetGoal = () => {
     //   }
     // },
   });
+  
   const {
     data: setGoalData,
     write,
@@ -64,8 +75,7 @@ const SetGoal = () => {
       className="flex flex-col gap-2 max-w-4xl"
     >
       <div>
-        Current goal:{" "}
-        {saverGoal && <span className="font-bold">{saverGoal.toNumber()}</span>}
+        Current goal:{" "} {saverGoalAmountForDisplay}
       </div>
       <form
         className="flex flex-col gap-2"
@@ -77,8 +87,8 @@ const SetGoal = () => {
         <input
           // disabled={saverGoal.gt(0)}
           onChange={(e) => {
-            if (parseInt(e.target.value)) {
-              setGoal(parseInt(e.target.value));
+            if (parseFloat(e.target.value)) {
+              setGoal(parseFloat(e.target.value));
             } else {
               setGoal(0);
             }
