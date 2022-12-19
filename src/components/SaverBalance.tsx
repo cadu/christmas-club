@@ -57,12 +57,12 @@ const SaverBalance = () => {
           {mintLoading ? "Minting..." : "Mint"}
         </button>
       </div>
-      {ccBalanceData &&
-      <div>
-        Your Contract Balance:{" "}
-        {ccBalanceData && utils.formatUnits(ccBalanceData?.toString(), 6)}
-      </div>
-      }
+      {ccBalanceData && (
+        <div>
+          Your Contract Balance:{" "}
+          {ccBalanceData && utils.formatUnits(ccBalanceData?.toString(), 6)}
+        </div>
+      )}
     </>
   );
 };
