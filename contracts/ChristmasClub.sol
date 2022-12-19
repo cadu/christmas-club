@@ -47,6 +47,8 @@ contract ChristmasClub is Ownable {
 
     mapping (address => uint256) goalAmounts;
 
+    mapping (address => bool) private preExistingSavers;
+
     uint256 constant FIVE_MINUTES_IN_SECONDS = 60 * 5;
 
     /*
@@ -77,9 +79,12 @@ contract ChristmasClub is Ownable {
     function setGoal(uint256 goalAmount) public {
 
         require(goalAmount > 0, "You must have a savings goal greater than zero");
-
+        require(goalAmount >= saverAmounts[address(msg.sender)],
+          "Your goal must be greater than amount already deposited");
+        uint256 priorGoalAmount = goalAmounts[msg.sender];
         goalAmounts[msg.sender] = goalAmount;
-        totalGoalAmount += goalAmount;
+        totalGoalAmount += (goalAmount - priorGoalAmount);
+        setSaverKnownData();
 
     }
 
@@ -116,8 +121,8 @@ contract ChristmasClub is Ownable {
         savingsToken.transferFrom(msg.sender, address(this), amount);
 
         saverAmounts[msg.sender] += amount;
-
         totalAmountSaved += amount;
+        setSaverKnownData();
 
         emit Deposit(address(msg.sender), amount, block.timestamp);
        
@@ -153,5 +158,14 @@ contract ChristmasClub is Ownable {
         }
         //if neither override is in effect, get the December test result
         return (monthTeller.getMonth(block.timestamp) == 12);
+    }
+
+    function setSaverKnownData() internal {     
+        bool saverWasInSystemBeforeThis = preExistingSavers[msg.sender];
+        //if it's a new saver we need to now mark it as known and increment numberOfSavers
+        if (!saverWasInSystemBeforeThis) {
+            numberOfSavers++;
+            preExistingSavers[msg.sender] = true;
+        }
     }
 }
