@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import Hero from "./Hero";
 import Head from "next/head";
 import pattern from "../../public/pattern.svg";
+import { Toaster } from "react-hot-toast";
 
 export default function Layout(props: { children: ReactNode }) {
   return (

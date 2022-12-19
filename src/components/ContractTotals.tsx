@@ -10,10 +10,6 @@ import {
 } from "wagmi";
 
 const ContractTotals = () => {
-  // Call smart contract, fetch current value
-
-  const { address, status, isConnected } = useAccount();
-
   const {
     data: numberOfSavers,
     isError: isNumSaversError,
@@ -47,32 +43,10 @@ const ContractTotals = () => {
     watch: true,
   });
 
-  /*
-  async function fetchContractTotals() {
-
-    if (isConnected) {
-      const contract = new ethers.Contract(process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS, ChristmasClub.abi, provider)
-      try {
-        const totalAmountSaved = await contract.totalAmountSaved();
-        const totalGoalAmount = await contract.totalGoalAmount();
-        // = await contract.numberOfSavers();
-      } catch(error) {
-        console.log(error)
-      }
-  }
-  }*/
-
-  // useEffect(() => {
-  //   if (!getXdata) return;
-  //   console.log(getXdata);
-  //   setNumberOfSavers(Number(getXdata));
-  // }, [getXdata]);
-
   //inside the return ( ... ) it's the HTML world.  Outside of return( ... ) it's TS / javascript world.
   return (
     <div>
       <p>
-        user wallet ${address} status ${status} <br />
         Number of Savers {numberOfSavers?.toNumber()} &nbsp;&nbsp; Total Amount
         Saved {totalAmountSaved?.toNumber()} &nbsp;&nbsp; Total Goal Amount{" "}
         {totalGoalAmount?.toNumber()}

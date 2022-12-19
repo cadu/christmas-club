@@ -2,7 +2,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { ConnectKitButton } from "connectkit";
 import { useAccount } from "wagmi";
-import { useIsMounted } from "../hooks/useIsMounted";
 
 interface MenuItemProps {
   link: string;
@@ -14,8 +13,8 @@ const Nav = () => {
 
   const menuItems: MenuItemProps[] = [
     {
-      link: "/#menu1",
-      text: "Menu 1",
+      link: "/demo",
+      text: "Demo",
     },
     {
       link: "/#menu2",
