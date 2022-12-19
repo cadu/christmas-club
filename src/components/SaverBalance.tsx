@@ -29,7 +29,7 @@ const SaverBalance = () => {
     address: process.env.NEXT_PUBLIC_CC_TOKEN_CONTRACT_ADDRESS,
     abi: tokenABI,
     functionName: "mint",
-    args: [saverAddress, utils.parseUnits("0.05", 6)],
+    args: [saverAddress, utils.parseUnits("100", 6)],
     // onError(err) {
     //   console.log(err);
     // },
