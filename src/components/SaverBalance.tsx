@@ -1,12 +1,5 @@
-import {
-  useAccount,
-  useBalance,
-  useContractRead,
-  usePrepareContractWrite,
-  useContractWrite,
-} from "wagmi";
+import { useAccount, useBalance, useContractRead } from "wagmi";
 import CCContractAbi from "../artifacts/contracts/abis/ChristmasClub";
-import tokenABI from "../../utils/CCTokenABI";
 import { utils } from "ethers";
 
 const SaverBalance = () => {
@@ -25,18 +18,6 @@ const SaverBalance = () => {
     watch: true,
   });
 
-  const { config: mintConfig } = usePrepareContractWrite({
-    address: process.env.NEXT_PUBLIC_CC_TOKEN_CONTRACT_ADDRESS,
-    abi: tokenABI,
-    functionName: "mint",
-    args: [saverAddress, utils.parseUnits("100", 6)],
-    // onError(err) {
-    //   console.log(err);
-    // },
-  });
-
-  const { write: mint, isLoading: mintLoading } = useContractWrite(mintConfig);
-
   if (isLoading) return <div>Fetching balance…</div>;
 
   if (isError)
@@ -48,21 +29,15 @@ const SaverBalance = () => {
     );
   return (
     <>
-      <div className="flex gap-2">
-        <div>Your CCT Balance: {data?.formatted}</div>
-        <button
-          onClick={() => mint?.()}
-          className=" bg-green-700 text-sm text-white py-1 px-2 rounded-lg"
-        >
-          {mintLoading ? "Minting..." : "Mint"}
-        </button>
+      <div className="flex flex-col items-end justify-end gap-2 rounded-md p-3 bg-gradient-to-t from-slate-200 to-slate-100">
+        <div>Your USDC Balance: {data?.formatted}</div>
+        {ccBalanceData && (
+          <div>
+            Your Deposit Balance:{" "}
+            {utils.formatUnits(ccBalanceData?.toString(), 6)}
+          </div>
+        )}
       </div>
-      {ccBalanceData && (
-        <div>
-          Your Contract Balance:{" "}
-          {utils.formatUnits(ccBalanceData?.toString(), 6)}
-        </div>
-      )}
     </>
   );
 };
