@@ -1,45 +1,41 @@
 import type { NextPage } from "next";
-import Head from "next/head";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import ContractTotals from "../components/ContractTotals";
 import Deposit from "../components/Deposit";
 import Withdraw from "../components/Withdraw";
-import { useIsMounted } from "../hooks/useIsMounted";
 import SaverBalance from "../components/SaverBalance";
 import SetGoal from "../components/SetGoal";
-import InWithdrawalPeriod from "../components/InWithdrawalPeriod";
+import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 const Home: NextPage = () => {
   const { isConnecting, isDisconnected } = useAccount();
+  const { chain } = useNetwork();
 
-  //call this last, only after everything else is called
-  const mounted = useIsMounted();
+  useEffect(() => {
+    {
+      if (!chain) return;
+      if (chain.id !== 31337) {
+        toast.error("You're not on localhost!");
+      }
+    }
+  }, [chain]);
 
-  if (isDisconnected)
-    return (
-      <>
-        <Head>
-          <title>Christmas Club</title>
-        </Head>
-        <div>Disconnected</div>
-      </>
-    );
+  if (isDisconnected) return <div>Disconnected</div>;
+  // console.log(chain.id);
 
   return (
     <>
-      <Head>
-        <title>Christmas Club</title>
-      </Head>
+      <main className="container mx-auto flex flex-col max-w-4xl pt-6">
+        {isConnecting && <div>Connecting...</div>}
 
-      <main className="container mx-auto flex flex-col max-w-4xl p-4">
-        {mounted && isConnecting && <div>Connecting...</div>}
-
-        <ContractTotals />
-        <SaverBalance />
+        <div className="flex justify-between">
+          <ContractTotals />
+          <SaverBalance />
+        </div>
+        <SetGoal />
         <Deposit />
         <Withdraw />
-        <SetGoal />
-        <InWithdrawalPeriod />
       </main>
     </>
   );
