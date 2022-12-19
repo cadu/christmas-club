@@ -334,29 +334,250 @@ describe("Christmas Club", function () {
         .to.equal(inWithdrawalPeriodInitially);
     });
   });
-  
+  //Testing set saver known data via numberOfSavers
+  describe("Saver number", function () {
+    beforeEach(async function () {
+      accounts = await ethers.getSigners();
 
-  /*
-  describe("Withdrawals", function () {
-    describe("Validations", function () {
-      it("Should revert with the right error if called too soon", async function () {
-        const { lock } = await loadFixture(deployOneYearLockFixture);
+      christmasClubTokenFactory = new ChristmasClubToken__factory(accounts[0]);
+      christmasClubTokenContract = await christmasClubTokenFactory.deploy();
+      await christmasClubTokenContract.deployed();
 
-        await expect(lock.withdraw()).to.be.revertedWith(
-          "You can't withdraw yet"
-        );
-      });
+      await deployDateTimeContract(accounts[0]);
 
-      it("Shouldn't fail if the unlockStartTime has arrived and the depositor calls it", async function () {
-        const { lock, unlockTime } = await loadFixture(
-          deployOneYearLockFixture
-        );
-
-        // Transactions are sent using the first signer by default
-        await time.increaseTo(unlockTime);
-
-        await expect(lock.withdraw()).not.to.be.reverted;
-      });
+      const christmasClubFactory = new ChristmasClub__factory(accounts[0]);
+      christmasClubContract = await christmasClubFactory.deploy(
+        //unlockStartTimeSecondsBN,
+        christmasClubTokenContract.address,
+        dateTimeContract.address
+      );
+      await christmasClubContract.deployed();
     });
-  });*/
+    it("should update when setting goal first time, no deposit", async function() {
+      const initialNumSaversBN = await christmasClubContract.numberOfSavers();
+      const initialNumSaversString = ethers.utils.formatUnits(initialNumSaversBN, 0);
+      const initialNumSavers = parseInt(initialNumSaversString);
+      console.log(
+        `initialNumSaversBN: ${initialNumSaversBN},
+        initialNumSaversString: ${initialNumSaversString}, initialNumSavers: ${initialNumSavers}.`);
+      
+      //set a goal - arbitrary number, e.g. 20
+      const setGoal1Tx = await christmasClubContract.setGoal(
+        ethers.BigNumber.from("20")
+      );
+      await setGoal1Tx.wait();
+      
+      const postSetNumSaversBN = await christmasClubContract.numberOfSavers();
+      const postSetNumSaversString = ethers.utils.formatUnits(postSetNumSaversBN, 0);
+      const postSetNumSavers = parseInt(postSetNumSaversString);
+      console.log(
+        `postSetNumSaversBN: ${postSetNumSaversBN},
+        postSetNumSaversString: ${postSetNumSaversString}, postSetNumSaversSavers: ${postSetNumSavers}.`);
+      
+      expect(postSetNumSavers, 
+        `Expected to add 1 to numSavers ${initialNumSavers}, but was ${postSetNumSavers}`
+      ).to.equal(initialNumSavers + 1);
+
+    });
+    it("should not increment when setting goal second time, no deposit", async function() {
+      const initialNumSaversBN = await christmasClubContract.numberOfSavers();
+      const initialNumSavers = parseInt(ethers.utils.formatUnits(initialNumSaversBN, 0));
+      
+      //set a goal - arbitrary number, e.g. 20
+      const setGoal1Tx = await christmasClubContract.setGoal(
+        ethers.BigNumber.from("20")
+      );
+      await setGoal1Tx.wait();
+      
+      const postSetNumSaversBN = await christmasClubContract.numberOfSavers();
+      const postSetNumSavers = parseInt(ethers.utils.formatUnits(postSetNumSaversBN, 0));
+      
+      expect(postSetNumSavers, 
+        `Expected to add 1 to numSavers ${initialNumSavers}, but was ${postSetNumSavers}`
+      ).to.equal(initialNumSavers + 1);
+
+      //set a goal - arbitrary number, e.g. 20
+      const setGoal2Tx = await christmasClubContract.setGoal(
+        ethers.BigNumber.from("30")
+      );
+      await setGoal2Tx.wait();
+      
+      const postSetNumSavers2BN = await christmasClubContract.numberOfSavers();
+      const postSetNumSavers2 = parseInt(ethers.utils.formatUnits(postSetNumSavers2BN, 0));
+      
+      expect(postSetNumSavers2, 
+        `Expected no difference between ${postSetNumSavers} and ${postSetNumSavers2}`
+      ).to.equal(postSetNumSavers);
+
+    });
+    it("should increment for first deposit but not again when setting goal after 1 deposit", 
+      async function()
+    {
+      const initialNumSaversBN = await christmasClubContract.numberOfSavers();
+      const initialNumSavers = parseInt(ethers.utils.formatUnits(initialNumSaversBN, 0));
+
+      //ensure in deposit period
+      const overrideWithdrawTx = await christmasClubContract.overrideWithdrawForDemo(false);
+      await overrideWithdrawTx.wait();
+
+      const amountToDeposit = ethers.utils.parseUnits("20", 6);
+      await christmasClubTokenContract.mint(owner.address, amountToDeposit);
+      await christmasClubTokenContract.approve(
+        christmasClubContract.address,
+        amountToDeposit
+      );
+      const deposit1Tx = await christmasClubContract.deposit(amountToDeposit);
+      await deposit1Tx.wait();
+
+      const postDeposit1NumSaversBN = await christmasClubContract.numberOfSavers();
+      const postDeposit1NumSavers = parseInt(ethers.utils.formatUnits(postDeposit1NumSaversBN, 0));
+      
+      expect(postDeposit1NumSavers, 
+        `Expected to add 1 to numSavers ${initialNumSavers}, but was ${postDeposit1NumSavers}`
+      ).to.equal(initialNumSavers + 1);
+
+      //set a goal - arbitrary number, e.g. 20
+      const setGoal1Tx = await christmasClubContract.setGoal(
+        ethers.utils.parseUnits("30", 6)
+      );
+      await setGoal1Tx.wait();
+      
+      const postSetNumSavers2BN = await christmasClubContract.numberOfSavers();
+      const postSetNumSavers2 = parseInt(ethers.utils.formatUnits(postSetNumSavers2BN, 0));
+      
+      expect(postSetNumSavers2, 
+        `Expected no difference between ${postDeposit1NumSavers} and ${postSetNumSavers2}`
+      ).to.equal(postDeposit1NumSavers);
+
+    });
+    
+    it("should increment for first deposit but not again for second deposit", 
+      async function()
+    {
+      const initialNumSaversBN = await christmasClubContract.numberOfSavers();
+      const initialNumSavers = parseInt(ethers.utils.formatUnits(initialNumSaversBN, 0));
+
+      //ensure in deposit period
+      const overrideWithdrawTx = await christmasClubContract.overrideWithdrawForDemo(false);
+      await overrideWithdrawTx.wait();
+
+      const AMOUNT_TO_APPROVE = ethers.utils.parseUnits("50", 6);
+      const AMOUNT_TO_DEPOSIT = ethers.utils.parseUnits("20", 6);
+      await christmasClubTokenContract.mint(owner.address, AMOUNT_TO_APPROVE);
+      await christmasClubTokenContract.approve(
+        christmasClubContract.address,
+        AMOUNT_TO_APPROVE
+      );
+      const deposit1Tx = await christmasClubContract.deposit(AMOUNT_TO_DEPOSIT);
+      await deposit1Tx.wait();
+
+      const postDeposit1NumSaversBN = await christmasClubContract.numberOfSavers();
+      const postDeposit1NumSavers = parseInt(ethers.utils.formatUnits(postDeposit1NumSaversBN, 0));
+      
+      expect(postDeposit1NumSavers, 
+        `Expected to add 1 to numSavers ${initialNumSavers}, but was ${postDeposit1NumSavers}`
+      ).to.equal(initialNumSavers + 1);
+
+      //set a goal - arbitrary number, e.g. 20
+      const deposit2Tx = await christmasClubContract.deposit(AMOUNT_TO_DEPOSIT);
+      await deposit2Tx.wait();
+      
+      const postSetNumSavers2BN = await christmasClubContract.numberOfSavers();
+      const postSetNumSavers2 = parseInt(ethers.utils.formatUnits(postSetNumSavers2BN, 0));
+      
+      expect(postSetNumSavers2, 
+        `Expected no difference between ${postDeposit1NumSavers} and ${postSetNumSavers2}`
+      ).to.equal(postDeposit1NumSavers);
+
+    });
+    /*it("should update when setting goal first time, no deposit", async function() {
+
+
+    });*/
+  }); 
+
+  
+  //Testing set saver known data via numberOfSavers
+  describe("Set goal", function () {
+    beforeEach(async function () {
+      accounts = await ethers.getSigners();
+
+      christmasClubTokenFactory = new ChristmasClubToken__factory(accounts[0]);
+      christmasClubTokenContract = await christmasClubTokenFactory.deploy();
+      await christmasClubTokenContract.deployed();
+
+      await deployDateTimeContract(accounts[0]);
+
+      const christmasClubFactory = new ChristmasClub__factory(accounts[0]);
+      christmasClubContract = await christmasClubFactory.deploy(
+        //unlockStartTimeSecondsBN,
+        christmasClubTokenContract.address,
+        dateTimeContract.address
+      );
+      await christmasClubContract.deployed();
+    });
+
+    it("shold not allow goal to be less than existing deposit", 
+      async function()
+    {
+      const initialNumSaversBN = await christmasClubContract.numberOfSavers();
+      const initialNumSavers = parseInt(ethers.utils.formatUnits(initialNumSaversBN, 0));
+
+      //ensure in deposit period
+      const overrideWithdrawTx = await christmasClubContract.overrideWithdrawForDemo(false);
+      await overrideWithdrawTx.wait();
+
+      const amountToDeposit = ethers.utils.parseEther("0.1");
+      await christmasClubTokenContract.mint(owner.address, amountToDeposit);
+      await christmasClubTokenContract.approve(
+        christmasClubContract.address,
+        amountToDeposit
+      );
+      const deposit1Tx = await christmasClubContract.deposit(amountToDeposit);
+      await deposit1Tx.wait();
+
+      const postDeposit1NumSaversBN = await christmasClubContract.numberOfSavers();
+      const postDeposit1NumSavers = parseInt(ethers.utils.formatUnits(postDeposit1NumSaversBN, 0));
+      
+      await expect(christmasClubContract.setGoal(ethers.BigNumber.from("20")), 
+        `Expected revert on goal amount less than deposit`
+      ).to.be.revertedWith('Your goal must be greater than amount already deposited');
+
+    });
+    it("shold allow goal to be set that is greater than existing deposit", 
+      async function()
+    {
+      const initialNumSaversBN = await christmasClubContract.numberOfSavers();
+      const initialNumSavers = parseInt(ethers.utils.formatUnits(initialNumSaversBN, 0));
+
+      //ensure in deposit period
+      const overrideWithdrawTx = await christmasClubContract.overrideWithdrawForDemo(false);
+      await overrideWithdrawTx.wait();
+
+      const amountToDeposit = ethers.utils.parseUnits("20", 6);
+      await christmasClubTokenContract.mint(owner.address, amountToDeposit);
+      await christmasClubTokenContract.approve(
+        christmasClubContract.address,
+        amountToDeposit
+      );
+      const deposit1Tx = await christmasClubContract.deposit(amountToDeposit);
+      await deposit1Tx.wait();
+
+      const postDeposit1NumSaversBN = await christmasClubContract.numberOfSavers();
+      const postDeposit1NumSavers = parseInt(ethers.utils.formatUnits(postDeposit1NumSaversBN, 0));
+      const GOAL_TO_SET = 120;
+      const setGoal1Tx = await christmasClubContract.setGoal(
+        ethers.utils.parseUnits(GOAL_TO_SET.toString(), 6)
+      );
+      await setGoal1Tx.wait();
+
+      const totalGoalBN = await christmasClubContract.totalGoalAmount();
+      
+      const totalGoal = parseInt(ethers.utils.formatUnits(totalGoalBN, 6));
+      expect(totalGoal, 
+        `Expected goal to be ${GOAL_TO_SET} after setting but was ${totalGoal}`
+      ).to.equal(GOAL_TO_SET);
+
+    });
+  }); 
 });
