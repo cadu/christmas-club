@@ -2,6 +2,7 @@ import Nav from "./Nav";
 import Footer from "./Footer";
 import { ReactNode } from "react";
 import Head from "next/head";
+import { Toaster } from "react-hot-toast";
 
 export default function Layout(props: { children: ReactNode }) {
   return (
@@ -9,6 +10,9 @@ export default function Layout(props: { children: ReactNode }) {
       <Head>
         <title>Christmas Club</title>
       </Head>
+      <div>
+        <Toaster />
+      </div>
       <div className="flex flex-col items-stretch min-h-screen">
         <Nav />
         <main className="flex w-full max-w-4xl mx-auto grow shrink-0">
