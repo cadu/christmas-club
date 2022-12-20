@@ -72,7 +72,7 @@ const InWithdrawalPeriod = () => {
     useContractWrite(configDemoInWithdrawPeriod);
 
   return (
-    <div>
+    <div className="pt-3">
       {isInWithdrawPeriod && (
         <p>
           It&apos;s Christmas season! You can withdraw your savings for holiday

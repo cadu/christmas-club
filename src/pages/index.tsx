@@ -9,9 +9,11 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
+import { useState } from "react";
 
 const Home: NextPage = () => {
   const { isDisconnected, isConnected } = useAccount();
+  const [saverUSDCBalance, setSaverUSDCBalance] = useState("");
 
   useEffect(() => {
     AOS.init();
@@ -30,17 +32,20 @@ const Home: NextPage = () => {
         <main className="container mx-auto flex flex-col max-w-4xl pt-6">
           <div className="flex justify-between">
             <ContractTotals />
-            <SaverBalance />
+            <SaverBalance
+              setSaverUSDCBalance={setSaverUSDCBalance}
+              saverUSDCBalance={saverUSDCBalance}
+            />
           </div>
           <div className="flex flex-col gap-12 pt-12">
-            <div className="flex flex-row  justify-evenly items-center">
+            <div className="grid grid-cols-2  gap-6 justify-evenly items-center">
               <label htmlFor="setGoal" data-aos="fade-left">
                 Set your goal for Christmas Club
               </label>
               <SetGoal />
             </div>
-            <div className="flex flex-row justify-evenly items-center">
-              <Deposit />
+            <div className="grid grid-cols-2 gap-6 items-center">
+              <Deposit saverUSDCBalance={saverUSDCBalance} />
               <label
                 htmlFor="depositAmount"
                 data-aos="fade-right"
@@ -50,9 +55,9 @@ const Home: NextPage = () => {
                 Start saving today and keep track of your progress...
               </label>
             </div>
-            <div className="flex justify-evenly items-center">
+            <div className="grid grid-cols-2 gap-6 justify-evenly items-center">
               <div data-aos="fade-right" data-aos-delay="450">
-                ...withdraw your savings and enjoy the festives!
+                ...withdraw your savings and enjoy the festivities!
               </div>
               <Withdraw />
             </div>

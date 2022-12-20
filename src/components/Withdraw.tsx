@@ -208,13 +208,13 @@ const Withdraw = () => {
           className="flex flex-col gap-2"
         >
           <button className="button">
-            {loading ? "Loading..." : "Withdraw now"}
+            {loading ? "Loading..." : "Withdraw"}
           </button>
           {errorMsg && (
             <div className="bg-red-600 text-white rounded p-2">{errorMsg}</div>
           )}
           {withdrawMsg && (
-            <div className="bg-orange-600 text-white rounded p-2">
+            <div className="bg-blue-600 text-white rounded p-2">
               {withdrawMsg}
             </div>
           )}
