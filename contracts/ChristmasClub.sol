@@ -75,6 +75,17 @@ contract ChristmasClub is Ownable {
         savingsToken = ICCToken(_savingsToken);
         monthTeller = MonthAPI(_monthAPIImpl);
     }
+    //from openzeppelin SafeMath
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+        assert(b <= a);
+        return a - b;
+    }
+
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a + b;
+        assert(c >= a);
+        return c;
+    }
 
     function setGoal(uint256 goalAmount) public {
 
@@ -82,8 +93,10 @@ contract ChristmasClub is Ownable {
         require(goalAmount >= saverAmounts[address(msg.sender)],
           "Your goal must be greater than amount already deposited");
         uint256 priorGoalAmount = goalAmounts[msg.sender];
+        
+        totalGoalAmount = add(sub(totalGoalAmount, priorGoalAmount), goalAmount);
+
         goalAmounts[msg.sender] = goalAmount;
-        totalGoalAmount += (goalAmount - priorGoalAmount);
         setSaverKnownData();
 
     }
