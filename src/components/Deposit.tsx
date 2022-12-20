@@ -39,11 +39,11 @@ const Deposit = () => {
   });
 
   const [depositAmount, setDepositAmount] = useState<string>("");
-  const [saverAmountForDisplay, setSaverAmountForDisplay] = useState<string>("");
+  const [saverAmountForDisplay, setSaverAmountForDisplay] =
+    useState<string>("");
   const [depositMsg, setDepositMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  
 
   const { data: saverAmount } = useContractRead({
     address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
@@ -53,14 +53,11 @@ const Deposit = () => {
   });
   //show 6 digit USDC as a USD / EUR 2 digit currency, without using ethers
   useEffect(() => {
-    console.log('useEffect ran. saverAmount is: ', saverAmount);
-    setSaverAmountForDisplay((
-      (
-        parseFloat(saverAmount.toString()) / 1000000
-      ).toFixed(2)).toString()
-    )
+    console.log("useEffect ran. saverAmount is: ", saverAmount);
+    setSaverAmountForDisplay(
+      (parseFloat(saverAmount.toString()) / 1000000).toFixed(2).toString()
+    );
   }, [saverAmount]);
-
 
   const { config: depositConfig } = usePrepareContractWrite({
     enabled: false,
@@ -99,11 +96,6 @@ const Deposit = () => {
 
       const amount = utils.parseUnits(depositAmount, 6);
 
-      // const tokenContract = new Contract(
-      //   process.env.NEXT_PUBLIC_CC_TOKEN_CONTRACT_ADDRESS,
-      //   erc20ABI,
-      //   signerData
-      // );
       await christmasClubTokenContract.approve(
         christmasClubContract.address,
         amount
@@ -112,14 +104,14 @@ const Deposit = () => {
       const tx = await christmasClubContract.deposit(amount);
       setDepositMsg(`Deposit in progress... Tx: ${tx.hash}`);
       await tx.wait();
-      setDepositMsg(`Deposit in completed! Tx: ${tx.hash}`);
+      setDepositMsg(`Deposit completed! Tx: ${tx.hash}`);
     } catch (error) {
       console.log(JSON.stringify(error));
 
       if (error.reason) {
         setDepositMsg(error.reason);
       } else {
-        setDepositMsg(JSON.stringify(error));
+        setDepositMsg(error);
       }
     } finally {
       setLoading(false);
@@ -128,26 +120,13 @@ const Deposit = () => {
 
   return (
     <>
-      <div>
-        {loading && (
-          <div className="rounded p-2 bg-teal-800 text-white">Loading...</div>
-        )}
-      </div>
-
       <div
         data-aos="fade-right"
         data-aos-delay="300"
         className="flex flex-col gap-2"
       >
-      <div>
-        Current Savings:{" "} {saverAmountForDisplay}
-      </div>
+        <div>Current Savings: {saverAmountForDisplay}</div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-          {depositMsg && (
-            <div className=" bg-orange-600 text-white rounded p-2">
-              {depositMsg}
-            </div>
-          )}
           <input
             onChange={(e) => setDepositAmount(e.target.value)}
             id="depositAmount"
@@ -155,7 +134,14 @@ const Deposit = () => {
             className="rounded border focus:outline-none focus:border-green-800 border-gray-400 p-2"
           />
 
-          <button className="button">Deposit now</button>
+          <button className="button">
+            {loading ? "Loading..." : "Deposit now"}
+          </button>
+          {depositMsg && (
+            <div className=" bg-orange-600 text-white rounded p-2">
+              {depositMsg}
+            </div>
+          )}
           <div>{errorMsg}</div>
         </form>
       </div>

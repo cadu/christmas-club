@@ -13,7 +13,8 @@ import useDebounce from "../hooks/useDebounce";
 
 const SetGoal = () => {
   const [goal, setGoal] = useState<number>(0);
-  const [saverGoalAmountForDisplay, setSaverGoalAmountForDisplay] = useState<string>("");
+  const [saverGoalAmountForDisplay, setSaverGoalAmountForDisplay] =
+    useState<string>("");
   const debouncedGoal = useDebounce(goal, 500);
   const [goalMsg, setGoalMsg] = useState("");
 
@@ -25,12 +26,10 @@ const SetGoal = () => {
   });
   //show 6 digit USDC as a USD / EUR 2 digit currency, without using ethers
   useEffect(() => {
-    console.log('useEffect ran. saverGoal is: ', saverGoal);
-    setSaverGoalAmountForDisplay((
-      (
-        parseFloat(saverGoal.toString()) / 1000000
-      ).toFixed(2)).toString()
-    )
+    console.log("useEffect ran. saverGoal is: ", saverGoal);
+    setSaverGoalAmountForDisplay(
+      (parseFloat(saverGoal.toString()) / 1000000).toFixed(2).toString()
+    );
   }, [saverGoal]);
 
   const {
@@ -54,19 +53,20 @@ const SetGoal = () => {
     //   }
     // },
   });
-  
+
   const {
     data: setGoalData,
     write,
     error: setGoalError,
     isError: setGoalIsError,
     isLoading: isLoadingSetGoal,
+    isSuccess,
   } = useContractWrite(config);
 
-  const { isSuccess } = useWaitForTransaction({
-    hash: setGoalData?.hash,
-    onSuccess: () => setGoal(0),
-  });
+  // const { isSuccess } = useWaitForTransaction({
+  //   hash: setGoalData?.hash,
+  //   onSuccess: () => setGoal(0),
+  // });
 
   return (
     <div
@@ -74,9 +74,7 @@ const SetGoal = () => {
       data-aos-delay="100"
       className="flex flex-col gap-2 max-w-4xl"
     >
-      <div>
-        Current goal:{" "} {saverGoalAmountForDisplay}
-      </div>
+      <div>Current goal: {saverGoalAmountForDisplay}</div>
       <form
         className="flex flex-col gap-2"
         onSubmit={(e) => {
@@ -98,7 +96,7 @@ const SetGoal = () => {
           id="setGoal"
           className="rounded border focus:outline-none focus:border-green-800 border-gray-400 p-2"
         />
-        <button disabled={!write || isLoadingSetGoal} className="button">
+        <button disabled={isLoadingSetGoal} className="button">
           {isLoadingSetGoal ? "Setting your goal..." : "Set my goal"}
         </button>
         {goalMsg && (

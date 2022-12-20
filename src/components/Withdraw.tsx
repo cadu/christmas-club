@@ -200,11 +200,6 @@ const Withdraw = () => {
   if (isInWithdrawalPeriod) {
     return (
       <>
-        {loading && (
-          <div className="rounded p-2 bg-teal-800 text-white">
-            Loading Withdrawal Info...
-          </div>
-        )}
         <form
           data-aos="fade-right"
           data-aos-delay="470"
@@ -212,13 +207,17 @@ const Withdraw = () => {
           onSubmit={handleSubmit}
           className="flex flex-col gap-2"
         >
+          <button className="button">
+            {loading ? "Loading..." : "Withdraw now"}
+          </button>
+          {errorMsg && (
+            <div className="bg-red-600 text-white rounded p-2">{errorMsg}</div>
+          )}
           {withdrawMsg && (
-            <div className=" bg-orange-600 text-white rounded p-2">
+            <div className="bg-orange-600 text-white rounded p-2">
               {withdrawMsg}
             </div>
           )}
-          <button className="button">Withdraw now</button>
-          <div>{errorMsg}</div>
           {withdrawalComplete && withdrawnAmount > 0 && (
             <div>
               Congratulations! You have withdrawn {withdrawnAmount} in time for

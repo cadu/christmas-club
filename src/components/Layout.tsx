@@ -12,7 +12,7 @@ export default function Layout(props: { children: ReactNode }) {
       <Head>
         <title>Christmas Club</title>
       </Head>
-
+      <Toaster position="top-right" />
       <div
         className="bg-cover bg-center items-stretch min-h-screen flex flex-col justify-evenly"
         style={{

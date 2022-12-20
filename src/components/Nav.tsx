@@ -15,14 +15,14 @@ const Nav = () => {
     {
       link: "/demo",
       text: "Demo",
-    }
+    },
   ];
 
   return (
     <>
       <nav className="md:flex hidden justify-between w-full max-w-4xl items-center mx-auto p-6 lg:px-0 shrink-0">
         <Link href="/">
-          <a>Christmas Club</a>
+          <a className="font-bold">Christmas Club</a>
         </Link>
         <Link href="/explainer">
           <a>What is Christmas Club?</a>
