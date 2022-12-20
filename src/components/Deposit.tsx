@@ -2,6 +2,7 @@ import { utils } from "ethers";
 import {
   useContract,
   useAccount,
+  useContractRead,
   useContractWrite,
   usePrepareContractWrite,
   useSigner,
@@ -38,9 +39,28 @@ const Deposit = () => {
   });
 
   const [depositAmount, setDepositAmount] = useState<string>("");
+  const [saverAmountForDisplay, setSaverAmountForDisplay] = useState<string>("");
   const [depositMsg, setDepositMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  
+
+  const { data: saverAmount } = useContractRead({
+    address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
+    abi: CCContractAbi.abi,
+    functionName: "getSaverAmount",
+    watch: true,
+  });
+  //show 6 digit USDC as a USD / EUR 2 digit currency, without using ethers
+  useEffect(() => {
+    console.log('useEffect ran. saverAmount is: ', saverAmount);
+    setSaverAmountForDisplay((
+      (
+        parseFloat(saverAmount.toString()) / 1000000
+      ).toFixed(2)).toString()
+    )
+  }, [saverAmount]);
+
 
   const { config: depositConfig } = usePrepareContractWrite({
     enabled: false,
@@ -119,6 +139,9 @@ const Deposit = () => {
         data-aos-delay="300"
         className="flex flex-col gap-2"
       >
+      <div>
+        Current Savings:{" "} {saverAmountForDisplay}
+      </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           {depositMsg && (
             <div className=" bg-orange-600 text-white rounded p-2">
