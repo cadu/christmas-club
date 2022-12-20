@@ -189,8 +189,10 @@ const Withdraw = () => {
         inputErrString.indexOf("You must have savings to withdraw") > 0
       ) {
         setErrorMsg("You must have savings to withdraw");
+      } else if (inputErrString.indexOf("user rejected transaction") > 0) {
+        setErrorMsg("User rejected");
       } else {
-        setErrorMsg(JSON.stringify(err.toString().substr(157)));
+        setErrorMsg(`Other error: ${JSON.stringify(err.message)}`);
       }
       setLoading(false);
       setWithdrawalComplete(true);
