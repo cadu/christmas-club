@@ -4,9 +4,12 @@ import SaverBalance from "../components/SaverBalance";
 import InWithdrawalPeriod from "../components/InWithdrawalPeriod";
 import { useAccount } from "wagmi";
 import { ConnectKitButton } from "connectkit";
+import { useState } from "react";
 
 const Demo: NextPage = () => {
   const { isConnected } = useAccount();
+  const [saverUSDCBalance, setSaverUSDCBalance] = useState("");
+
   return (
     <main className="container mx-auto flex flex-col max-w-4xl pt-6">
       <div className="flex justify-between items-start">
@@ -24,7 +27,12 @@ const Demo: NextPage = () => {
             <ConnectKitButton label="Connect your wallet to enjoy the Christmas Club" />
           )}
         </div>
-        {isConnected && <SaverBalance />}
+        {isConnected && (
+          <SaverBalance
+            saverUSDCBalance={saverUSDCBalance}
+            setSaverUSDCBalance={setSaverUSDCBalance}
+          />
+        )}
       </div>
       {isConnected && <InWithdrawalPeriod />}
     </main>

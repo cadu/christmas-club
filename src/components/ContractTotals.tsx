@@ -10,7 +10,8 @@ import {
 } from "wagmi";
 
 const ContractTotals = () => {
-  const [amountSavedForDisplay, setAmountSavedForDisplay] = useState<string>("");
+  const [amountSavedForDisplay, setAmountSavedForDisplay] =
+    useState<string>("");
   const [goalAmountForDisplay, setGoalAmountForDisplay] = useState<string>("");
   const {
     data: numberOfSavers,
@@ -35,8 +36,11 @@ const ContractTotals = () => {
   });
 
   useEffect(() => {
-    console.log('useEffect ran. totalAmountSaved is: ', totalGoalAmount);
-    setGoalAmountForDisplay(((parseFloat(totalGoalAmount.toString()) / 1000000).toFixed(2)).toString())
+    if (!totalGoalAmount) return;
+    console.log("useEffect ran. totalAmountSaved is: ", totalGoalAmount);
+    setGoalAmountForDisplay(
+      (parseFloat(totalGoalAmount.toString()) / 1000000).toFixed(2).toString()
+    );
   }, [totalGoalAmount]);
 
   const {
@@ -51,16 +55,19 @@ const ContractTotals = () => {
   });
 
   useEffect(() => {
-    console.log('useEffect ran. totalAmountSaved is: ', totalAmountSaved);
-    setAmountSavedForDisplay(((parseFloat(totalAmountSaved.toString()) / 1000000).toFixed(2)).toString())
+    if (!totalAmountSaved) return;
+    console.log("useEffect ran. totalAmountSaved is: ", totalAmountSaved);
+    setAmountSavedForDisplay(
+      (parseFloat(totalAmountSaved.toString()) / 1000000).toFixed(2).toString()
+    );
   }, [totalAmountSaved]);
   //inside the return ( ... ) it's the HTML world.  Outside of return( ... ) it's TS / javascript world.
   return (
     <div>
       <p>
-        Number of Savers {numberOfSavers?.toNumber()} &nbsp;&nbsp;
-        Total Amount Saved  {amountSavedForDisplay}&nbsp;&nbsp; 
-        Total Goal Amount{" "} {goalAmountForDisplay}
+        Number of Savers {numberOfSavers?.toNumber()} &nbsp;&nbsp; Total Amount
+        Saved {amountSavedForDisplay}&nbsp;&nbsp; Total Goal Amount{" "}
+        {goalAmountForDisplay}
       </p>
     </div>
   );

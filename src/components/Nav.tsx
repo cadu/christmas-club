@@ -20,7 +20,7 @@ const Nav = () => {
 
   return (
     <>
-      <nav className="md:flex hidden justify-between w-full max-w-4xl items-center mx-auto p-6 lg:px-0 shrink-0">
+      <nav className="md:flex justify-between w-full max-w-4xl items-center mx-auto p-6 lg:px-0 shrink-0">
         <Link href="/">
           <a className="font-bold">Christmas Club</a>
         </Link>

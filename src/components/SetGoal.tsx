@@ -17,6 +17,7 @@ const SetGoal = () => {
     useState<string>("");
   const debouncedGoal = useDebounce(goal, 500);
   const [goalMsg, setGoalMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const { data: saverGoal } = useContractRead({
     address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
@@ -26,6 +27,7 @@ const SetGoal = () => {
   });
   //show 6 digit USDC as a USD / EUR 2 digit currency, without using ethers
   useEffect(() => {
+    if (!saverGoal) return;
     console.log("useEffect ran. saverGoal is: ", saverGoal);
     setSaverGoalAmountForDisplay(
       (parseFloat(saverGoal.toString()) / 1000000).toFixed(2).toString()
@@ -42,23 +44,27 @@ const SetGoal = () => {
     functionName: "setGoal",
     args: [utils.parseUnits(debouncedGoal.toString(), 6)],
     enabled: Boolean(debouncedGoal),
-    // onSuccess(data) {
-    //   alert("foi");
-    // },
-    // onError(err) {
-    //   if (err.reason) {
-    //     setGoalMsg(err.reason);
-    //   } else {
-    //     setGoalMsg(JSON.stringify(err));
-    //   }
-    // },
+    onError(error) {
+      console.log(JSON.stringify(error));
+
+      if (
+        error.message.indexOf(
+          "Your goal must be greater than amount already deposited"
+        ) > 0
+      ) {
+        setErrorMsg("Your goal must be greater than amount already deposited");
+      } else {
+        setErrorMsg(error.message);
+      }
+    },
+    onSuccess() {
+      setErrorMsg("");
+    },
   });
 
   const {
     data: setGoalData,
     write,
-    error: setGoalError,
-    isError: setGoalIsError,
     isLoading: isLoadingSetGoal,
     isSuccess,
   } = useContractWrite(config);
@@ -79,7 +85,19 @@ const SetGoal = () => {
         className="flex flex-col gap-2"
         onSubmit={(e) => {
           e.preventDefault();
-          write?.();
+          try {
+            if (goal == 0) {
+              setErrorMsg("The new goal cannot be zero");
+              return;
+            }
+            if (saverGoal.div(1000000).eq(BigNumber.from(goal))) {
+              setErrorMsg("The new goal cannot be the same");
+              return;
+            }
+            write?.();
+          } catch (e) {
+            setGoalMsg("Invalid number");
+          }
         }}
       >
         <input
@@ -97,7 +115,7 @@ const SetGoal = () => {
           className="rounded border focus:outline-none focus:border-green-800 border-gray-400 p-2"
         />
         <button disabled={isLoadingSetGoal} className="button">
-          {isLoadingSetGoal ? "Setting your goal..." : "Set my goal"}
+          {isLoadingSetGoal ? "Loading..." : "Set my goal"}
         </button>
         {goalMsg && (
           <div className=" bg-orange-600 text-white rounded p-2">{goalMsg}</div>
@@ -106,7 +124,7 @@ const SetGoal = () => {
           <div className=" bg-green-600 text-white rounded p-2">
             You have successfully set your goal!
             <div>
-              Check the tx on{" "}
+              Check the transaction on{" "}
               <Link
                 className="border-b-2 border-green-800"
                 href={`https://etherscan.io/tx/${setGoalData?.hash}`}
@@ -116,9 +134,9 @@ const SetGoal = () => {
             </div>
           </div>
         )}
-        {setGoalIsError && (
+        {errorMsg && (
           <div className=" bg-red-600 text-white rounded max-w-4xl p-2">
-            Error: {setGoalError?.message}
+            {errorMsg}
           </div>
         )}
       </form>

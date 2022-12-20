@@ -12,6 +12,7 @@ import {
 import CCContractAbi from "../artifacts/contracts/abis/ChristmasClub";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 interface FormElements extends HTMLFormControlsCollection {
   depositInput: HTMLInputElement;
@@ -20,7 +21,11 @@ interface DepositFormElement extends HTMLFormElement {
   readonly elements: FormElements;
 }
 
-const Deposit = () => {
+type DepositProps = {
+  saverUSDCBalance: string;
+};
+
+const Deposit = ({ saverUSDCBalance }: DepositProps) => {
   const baseRevertError = "reverted with reason string ";
   const baseRvertRegex = new RegExp(baseRevertError);
   const { address: userWallet } = useAccount();
@@ -44,6 +49,7 @@ const Deposit = () => {
   const [depositMsg, setDepositMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
   const { data: saverAmount } = useContractRead({
     address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
@@ -53,6 +59,7 @@ const Deposit = () => {
   });
   //show 6 digit USDC as a USD / EUR 2 digit currency, without using ethers
   useEffect(() => {
+    if (!saverAmount) return;
     console.log("useEffect ran. saverAmount is: ", saverAmount);
     setSaverAmountForDisplay(
       (parseFloat(saverAmount.toString()) / 1000000).toFixed(2).toString()
@@ -64,7 +71,6 @@ const Deposit = () => {
     abi: CCContractAbi.abi,
     address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
     functionName: "deposit",
-    signer: signerData,
     args: [utils.parseEther("0.01")],
     onError(err) {
       console.log(JSON.stringify(err));
@@ -72,6 +78,7 @@ const Deposit = () => {
   });
 
   const {
+    data: despositData,
     write: deposit,
     isSuccess: depositIsSuccess,
     error: depositError,
@@ -93,6 +100,19 @@ const Deposit = () => {
     try {
       setLoading(true);
       setDepositMsg("");
+      setErrorMsg("");
+      console.log(saverUSDCBalance);
+
+      if (!Number.parseFloat(depositAmount)) {
+        setErrorMsg("Invalid number to deposit");
+        return;
+      }
+      if (
+        Number.parseFloat(saverUSDCBalance) < Number.parseFloat(depositAmount)
+      ) {
+        setErrorMsg("Your balance of USDC is too low to deposit this much");
+        return;
+      }
 
       const amount = utils.parseUnits(depositAmount, 6);
 
@@ -104,14 +124,28 @@ const Deposit = () => {
       const tx = await christmasClubContract.deposit(amount);
       setDepositMsg(`Deposit in progress... Tx: ${tx.hash}`);
       await tx.wait();
-      setDepositMsg(`Deposit completed! Tx: ${tx.hash}`);
+      setSuccessMsg(`Deposit completed! Tx: ${tx.hash}`);
     } catch (error) {
       console.log(JSON.stringify(error));
 
       if (error.reason) {
-        setDepositMsg(error.reason);
+        if (
+          error.reason.indexOf(
+            "Your balance of USDC is too low to deposit this much"
+          ) > 0
+        ) {
+          setErrorMsg("Your balance of USDC is too low to deposit this much");
+        } else if (
+          error.reason.indexOf(
+            "Too late to make another deposit this year - you can withdraw now"
+          ) > 0
+        ) {
+          setErrorMsg("Too late to make another deposit this year :(");
+        } else {
+          setDepositMsg(error.reason);
+        }
       } else {
-        setDepositMsg(error);
+        setDepositMsg(JSON.stringify(error));
       }
     } finally {
       setLoading(false);
@@ -133,16 +167,22 @@ const Deposit = () => {
             type="text"
             className="rounded border focus:outline-none focus:border-green-800 border-gray-400 p-2"
           />
-
           <button className="button">
             {loading ? "Loading..." : "Deposit now"}
           </button>
           {depositMsg && (
-            <div className=" bg-orange-600 text-white rounded p-2">
+            <div className=" bg-blue-600 text-white rounded p-2">
               {depositMsg}
             </div>
           )}
-          <div>{errorMsg}</div>
+          {successMsg && (
+            <div className=" bg-green-600 text-white rounded p-2">
+              {successMsg}
+            </div>
+          )}
+          {errorMsg && (
+            <div className=" bg-red-600 text-white rounded p-2">{errorMsg}</div>
+          )}
         </form>
       </div>
     </>
