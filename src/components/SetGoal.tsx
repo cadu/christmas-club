@@ -123,15 +123,6 @@ const SetGoal = () => {
         {isSuccess && (
           <div className=" bg-green-600 text-white rounded p-2">
             You have successfully set your goal!
-            <div>
-              Check the transaction on{" "}
-              <Link
-                className="border-b-2 border-green-800"
-                href={`https://etherscan.io/tx/${setGoalData?.hash}`}
-              >
-                Etherscan
-              </Link>
-            </div>
           </div>
         )}
         {errorMsg && (

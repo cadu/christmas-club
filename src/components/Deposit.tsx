@@ -101,6 +101,7 @@ const Deposit = ({ saverUSDCBalance }: DepositProps) => {
       setLoading(true);
       setDepositMsg("");
       setErrorMsg("");
+      setSuccessMsg("");
       console.log(saverUSDCBalance);
 
       if (!Number.parseFloat(depositAmount)) {
@@ -122,9 +123,9 @@ const Deposit = ({ saverUSDCBalance }: DepositProps) => {
       );
 
       const tx = await christmasClubContract.deposit(amount);
-      setDepositMsg(`Deposit in progress... Tx: ${tx.hash}`);
+      setDepositMsg(`Deposit in progress...`);
       await tx.wait();
-      setSuccessMsg(`Deposit completed! Tx: ${tx.hash}`);
+      setSuccessMsg(`Deposit completed!`);
     } catch (error) {
       console.log(JSON.stringify(error));
 

@@ -173,10 +173,9 @@ const Withdraw = () => {
         );
       }
       setWithdrawnAmount(withdrawnAmount);
-      setWithdrawMsg(`Withdrawal complete!\n
+      setWithdrawMsg(`Withdrawal complete!
         ${balanceMessage} \n
-        Amount:  ${withdrawnAmount.toString()},
-        Tx: ${withdrawTx.hash}`);
+        Amount:  ${withdrawnAmount.toString()}`);
       setLoading(false);
     } catch (err) {
       //get 2 required texts from ChristmasClub.sol and make a nice front end error from those.
@@ -222,7 +221,7 @@ const Withdraw = () => {
           )}
           {withdrawalComplete && withdrawnAmount > 0 && (
             <div>
-              Congratulations! You have withdrawn {withdrawnAmount} in time for
+              Congratulations! You have withdrawn ${withdrawnAmount} in time for
               Christmas!
             </div>
           )}
