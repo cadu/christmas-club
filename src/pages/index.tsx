@@ -31,7 +31,7 @@ const Home: NextPage = () => {
     isConnected && (
       <>
         <main className="container mx-auto flex flex-col max-w-4xl pt-6">
-          <div className="flex justify-between">
+          <div className="flex flex-col md:flex-row justify-between">
             <ContractTotals />
             <SaverBalance
               contractBalance={contractBalance}
