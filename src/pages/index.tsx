@@ -7,13 +7,13 @@ import SaverBalance from "../components/SaverBalance";
 import SetGoal from "../components/SetGoal";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import toast from "react-hot-toast";
 import { useEffect } from "react";
 import { useState } from "react";
 
 const Home: NextPage = () => {
   const { isDisconnected, isConnected } = useAccount();
   const [saverUSDCBalance, setSaverUSDCBalance] = useState("");
+  const [goal, setGoal] = useState(0);
 
   useEffect(() => {
     AOS.init();
@@ -42,7 +42,7 @@ const Home: NextPage = () => {
               <label htmlFor="setGoal" data-aos="fade-left">
                 Set your goal for Christmas Club
               </label>
-              <SetGoal />
+              <SetGoal goal={goal} setGoal={setGoal} />
             </div>
             <div className="grid grid-cols-2 gap-6 items-center">
               <Deposit saverUSDCBalance={saverUSDCBalance} />
