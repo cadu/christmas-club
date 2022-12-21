@@ -13,6 +13,7 @@ import { useState } from "react";
 const Home: NextPage = () => {
   const { isDisconnected, isConnected } = useAccount();
   const [saverUSDCBalance, setSaverUSDCBalance] = useState("");
+  const [contractBalance, setContractBalance] = useState("");
   const [goal, setGoal] = useState(0);
 
   useEffect(() => {
@@ -33,6 +34,8 @@ const Home: NextPage = () => {
           <div className="flex justify-between">
             <ContractTotals />
             <SaverBalance
+              contractBalance={contractBalance}
+              setContractBalance={setContractBalance}
               setSaverUSDCBalance={setSaverUSDCBalance}
               saverUSDCBalance={saverUSDCBalance}
             />
@@ -42,7 +45,13 @@ const Home: NextPage = () => {
               <label htmlFor="setGoal" data-aos="fade-left">
                 Set your goal for Christmas Club
               </label>
-              <SetGoal goal={goal} setGoal={setGoal} />
+              <div className="flex flex-col">
+                <SetGoal
+                  contractBalance={contractBalance}
+                  goal={goal}
+                  setGoal={setGoal}
+                />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-6 items-center">
               <Deposit saverUSDCBalance={saverUSDCBalance} />

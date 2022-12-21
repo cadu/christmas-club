@@ -6,15 +6,19 @@ import { useEffect, useState } from "react";
 type SaverBalanceProps = {
   saverUSDCBalance: string;
   setSaverUSDCBalance: (balance: string) => void;
+  contractBalance: string;
+  setContractBalance: (balance: string) => void;
 };
 
 const SaverBalance = ({
   saverUSDCBalance,
   setSaverUSDCBalance,
+  contractBalance,
+  setContractBalance,
 }: SaverBalanceProps) => {
   const { address: saverAddress } = useAccount();
   // const [usdcBalance, setUsdcBalance] = useState("");
-  const [contractBalance, setContractBalance] = useState("");
+  // const [contractBalance, setContractBalance] = useState("");
   const { data, isError, isLoading, error } = useBalance({
     token: `0x${process.env.NEXT_PUBLIC_CC_TOKEN_CONTRACT_ADDRESS_NO0X}`,
     address: saverAddress,

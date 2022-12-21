@@ -9,6 +9,7 @@ import { useState } from "react";
 const Demo: NextPage = () => {
   const { isConnected } = useAccount();
   const [saverUSDCBalance, setSaverUSDCBalance] = useState("");
+  const [contractBalance, setContractBalance] = useState("");
 
   return (
     <main className="container mx-auto flex flex-col max-w-4xl pt-6">
@@ -29,6 +30,8 @@ const Demo: NextPage = () => {
         </div>
         {isConnected && (
           <SaverBalance
+            contractBalance={contractBalance}
+            setContractBalance={setContractBalance}
             saverUSDCBalance={saverUSDCBalance}
             setSaverUSDCBalance={setSaverUSDCBalance}
           />
