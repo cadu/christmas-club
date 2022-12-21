@@ -41,11 +41,11 @@ yarn-error.log*
 
 # typechain
 typechain
-#typechain-types
+typechain-types
 
 # hardhat
 cache
-#artifacts
+artifacts
 
 #No need to push install-state.gz to users who don't need it.
 .yarn/install-state.gz
