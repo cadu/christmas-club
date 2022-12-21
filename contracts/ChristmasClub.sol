@@ -149,7 +149,7 @@ contract ChristmasClub is Ownable {
         amount = goalAmounts[msg.sender];
     }
 
-    function overrideWithdrawForDemo(bool inWithdrawalPeriod) public onlyOwner {
+    function overrideWithdrawForDemo(bool inWithdrawalPeriod) public {
         if (inWithdrawalPeriod) {
             //set true for 5 minutes
             overrideWithdrawalFalseUntil = 0;

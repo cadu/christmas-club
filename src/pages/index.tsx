@@ -15,6 +15,43 @@ const Home: NextPage = () => {
   const [saverUSDCBalance, setSaverUSDCBalance] = useState("");
   const [contractBalance, setContractBalance] = useState("");
   const [goal, setGoal] = useState(0);
+  //const [numDepositsMsg, setNumDepositsMsg] = useState("");
+
+  //check what to demo 
+  const ShowNumDeposits = () => {
+    let depositsMsgFragments = "";
+    let monthsUntilWithdrawalStart = 6; //assume in June for Demo
+    const currentMonth = new Date().getMonth();
+    if (currentMonth != 11) {
+      //if it is not use correct nubmer of months
+      monthsUntilWithdrawalStart = (11 - currentMonth);
+    } else {
+      depositsMsgFragments = "Demo for December as if June:";
+    }
+    if (isConnected) {
+      if (goal > 0) {
+        let contractBalanceAsNum: number = 0.0;
+        try {
+          contractBalanceAsNum = parseFloat(contractBalance);
+        } catch(err) {
+          console.log("could not parse saver current contract balance");
+        }
+        if (parseFloat(contractBalance) >= goal) {
+          depositsMsgFragments += "You do not need to make any more deposits to reach your current goal!"
+        } else {
+          const remainingAmount: number  = (goal - parseFloat(contractBalance));
+          const avgDepositPerMonth = (remainingAmount / monthsUntilWithdrawalStart).toFixed(2);
+          depositsMsgFragments += `You can reach your goal by depositing extra ${avgDepositPerMonth} for ${monthsUntilWithdrawalStart} months`;
+        }
+        //setNumDepositsMsg(depositsMsgFragments);
+      } else {
+        //setNumDepositsMsg("");
+        depositsMsgFragments = "";
+      }
+    }
+    const numDepositsMsg = depositsMsgFragments;
+    return ( <>{numDepositsMsg}</> );
+  }
 
   useEffect(() => {
     AOS.init();
@@ -63,6 +100,7 @@ const Home: NextPage = () => {
               >
                 Start saving today and keep track of your progress...
               </label>
+              <ShowNumDeposits />
             </div>
             <div className="grid grid-cols-2 gap-6 justify-evenly items-center">
               <div data-aos="fade-right" data-aos-delay="450">
