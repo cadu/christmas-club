@@ -153,7 +153,7 @@ const Withdraw = () => {
       const withdrawTx = await christmasClubContract.withdraw();
       console.log("Withdrawal in progress");
 
-      setWithdrawMsg(`Withdrawal in progress... Tx: ${withdrawTx.hash}`);
+      setWithdrawMsg(`Withdrawal in progress...`);
       await withdrawTx.wait();
       console.log("Withdrawal complete.");
 

@@ -2,6 +2,7 @@ import {
   useContractWrite,
   usePrepareContractWrite,
   useContractRead,
+  useAccount,
 } from "wagmi";
 import { utils, BigNumber } from "ethers";
 import CCContractAbi from "../artifacts/contracts/abis/ChristmasClub";
@@ -19,11 +20,13 @@ const SetGoal = ({ goal, setGoal, contractBalance }: GoalProps) => {
   const debouncedGoal = useDebounce(goal, 500);
   const [goalMsg, setGoalMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const { address: userWallet } = useAccount();
 
   const { data: saverGoal } = useContractRead({
     address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
     abi: CCContractAbi.abi,
     functionName: "getSaverGoal",
+    overrides: { from: userWallet },
     watch: true,
   });
   //show 6 digit USDC as a USD / EUR 2 digit currency, without using ethers

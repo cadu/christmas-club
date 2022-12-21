@@ -36,6 +36,7 @@ const SaverBalance = ({
     address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
     abi: CCContractAbi.abi,
     functionName: "getSaverAmount",
+    overrides: { from: saverAddress },
     watch: true,
     onSuccess(data) {
       try {

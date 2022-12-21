@@ -55,6 +55,7 @@ const Deposit = ({ saverUSDCBalance }: DepositProps) => {
     address: process.env.NEXT_PUBLIC_CC_CONTRACT_ADDRESS,
     abi: CCContractAbi.abi,
     functionName: "getSaverAmount",
+    overrides: { from: userWallet },
     watch: true,
   });
   //show 6 digit USDC as a USD / EUR 2 digit currency, without using ethers
