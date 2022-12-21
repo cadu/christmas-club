@@ -11,8 +11,9 @@ import useDebounce from "../hooks/useDebounce";
 type GoalProps = {
   goal: number;
   setGoal: (n: number) => void;
+  contractBalance: string;
 };
-const SetGoal = ({ goal, setGoal }: GoalProps) => {
+const SetGoal = ({ goal, setGoal, contractBalance }: GoalProps) => {
   const [saverGoalAmountForDisplay, setSaverGoalAmountForDisplay] =
     useState<string>("");
   const debouncedGoal = useDebounce(goal, 500);
@@ -69,10 +70,15 @@ const SetGoal = ({ goal, setGoal }: GoalProps) => {
     isSuccess,
   } = useContractWrite(config);
 
-  // const { isSuccess } = useWaitForTransaction({
-  //   hash: setGoalData?.hash,
-  //   onSuccess: () => setGoal(0),
-  // });
+  const goalPercentage = () => {
+    if ((Number(contractBalance) && Number(saverGoalAmountForDisplay)) != 0) {
+      return Math.trunc(
+        (Number(contractBalance) / Number(saverGoalAmountForDisplay)) * 100
+      );
+    } else {
+      return 0;
+    }
+  };
 
   return (
     <div
@@ -80,7 +86,27 @@ const SetGoal = ({ goal, setGoal }: GoalProps) => {
       data-aos-delay="100"
       className="flex flex-col gap-2 max-w-4xl"
     >
-      <div>Current goal: {saverGoalAmountForDisplay}</div>
+      <div className="relative pt-1 ">
+        <div className="flex mb-2 items-center justify-between">
+          <div>
+            <span className="text-xs inline-block py-1 px-2 uppercase rounded-full text-green-600 bg-green-200">
+              Current Goal{" "}
+              <span className="font-semibold">{saverGoalAmountForDisplay}</span>
+            </span>
+          </div>
+          <div className="text-right">
+            <span className="text-xs font-semibold inline-block text-green-200">
+              {`${goalPercentage()}%`}
+            </span>
+          </div>
+        </div>
+        <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-green-200">
+          <div
+            style={{ width: `${goalPercentage()}%` }}
+            className="shadow-none flex flex-col text-center transition-all duration-200 ease-in-out whitespace-nowrap text-white justify-center bg-green-500"
+          ></div>
+        </div>
+      </div>
       <form
         className="flex flex-col gap-2"
         onSubmit={(e) => {
