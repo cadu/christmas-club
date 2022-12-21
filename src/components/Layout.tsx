@@ -21,7 +21,7 @@ export default function Layout(props: { children: ReactNode }) {
       >
         {/* <Hero /> */}
         <Nav />
-        <main className="flex w-full max-w-4xl mx-auto grow shrink-0  rounded-lg ">
+        <main className="flex w-full max-w-4xl mx-auto grow shrink-0  rounded-lg px-4 md:px-0">
           {props.children}
         </main>
         <Footer
