@@ -1,7 +1,6 @@
 import Nav from "./Nav";
 import Footer from "./Footer";
 import { ReactNode } from "react";
-import Hero from "./Hero";
 import Head from "next/head";
 import pattern from "../../public/ccpattern.svg";
 import { Toaster } from "react-hot-toast";
