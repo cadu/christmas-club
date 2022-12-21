@@ -70,9 +70,15 @@ const SetGoal = ({ goal, setGoal, contractBalance }: GoalProps) => {
     isSuccess,
   } = useContractWrite(config);
 
-  const goalPercentage = Math.trunc(
-    (Number(contractBalance) / Number(saverGoalAmountForDisplay)) * 100
-  );
+  const goalPercentage = () => {
+    if ((Number(contractBalance) && Number(saverGoalAmountForDisplay)) != 0) {
+      return Math.trunc(
+        (Number(contractBalance) / Number(saverGoalAmountForDisplay)) * 100
+      );
+    } else {
+      return 0;
+    }
+  };
 
   return (
     <div
@@ -90,13 +96,13 @@ const SetGoal = ({ goal, setGoal, contractBalance }: GoalProps) => {
           </div>
           <div className="text-right">
             <span className="text-xs font-semibold inline-block text-green-200">
-              {`${goalPercentage}%`}
+              {`${goalPercentage()}%`}
             </span>
           </div>
         </div>
         <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-green-200">
           <div
-            style={{ width: `${goalPercentage}%` }}
+            style={{ width: `${goalPercentage()}%` }}
             className="shadow-none flex flex-col text-center transition-all duration-200 ease-in-out whitespace-nowrap text-white justify-center bg-green-500"
           ></div>
         </div>
