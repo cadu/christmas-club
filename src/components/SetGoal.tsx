@@ -1,18 +1,18 @@
 import {
   useContractWrite,
   usePrepareContractWrite,
-  useSigner,
-  useWaitForTransaction,
   useContractRead,
 } from "wagmi";
 import { utils, BigNumber } from "ethers";
 import CCContractAbi from "../artifacts/contracts/abis/ChristmasClub";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import useDebounce from "../hooks/useDebounce";
 
-const SetGoal = () => {
-  const [goal, setGoal] = useState<number>(0);
+type GoalProps = {
+  goal: number;
+  setGoal: (n: number) => void;
+};
+const SetGoal = ({ goal, setGoal }: GoalProps) => {
   const [saverGoalAmountForDisplay, setSaverGoalAmountForDisplay] =
     useState<string>("");
   const debouncedGoal = useDebounce(goal, 500);
@@ -32,7 +32,7 @@ const SetGoal = () => {
     setSaverGoalAmountForDisplay(
       (parseFloat(saverGoal.toString()) / 1000000).toFixed(2).toString()
     );
-  }, [saverGoal]);
+  }, [saverGoal, debouncedGoal]);
 
   const {
     config,
