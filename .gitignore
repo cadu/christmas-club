@@ -41,7 +41,7 @@ yarn-error.log*
 
 # typechain
 typechain
-typechain-types
+#typechain-types
 
 # hardhat
 cache
